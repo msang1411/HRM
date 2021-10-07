@@ -1,0 +1,22 @@
+﻿@page "/"
+
+@using HRM.Models
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+    <p>@acc</p>
+
+
+@code{
+    string acc;
+    HRMContext c = new HRMContext();
+
+    protected override void OnInitialized()
+    {
+        acc = c.Accounts.FirstOrDefault().AccountEmployee.ToString();
+    }
+}
