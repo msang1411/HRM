@@ -28,7 +28,7 @@ namespace HRM.Models
         public decimal? PhoneNumber { get; set; }
         public decimal? Wage { get; set; }
         public DateTime? JoinDate { get; set; }
-        public bool? IsInternship { get; set; }
+        public bool? IsInternship { get; set; } = false;
         public DateTime? JoinInternshipDate { get; set; }
         public string StateInternship { get; set; }
         public int? ApproverInternship { get; set; }

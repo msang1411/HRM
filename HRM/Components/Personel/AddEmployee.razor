@@ -1,35 +1,45 @@
 ﻿@page "/personel/new-employee"
 
 @inject HRM.Services.EmployeeService EmployeeService
+@inject HRM.Services.PositionService PositionService
+@inject HRM.Services.DepartmentService DepartmentService
+@inject NavigationManager NavigationManager
 @using HRM.Models
 @using MudBlazor
 
 <div class="container">
-    <EditForm Model="_employee" class="my-lg-5 p-3 bg-white shadow-lg">
+    <MudForm Model="_employee" @bind-IsValid="_success" class="my-lg-5 p-3 bg-white shadow-lg">
         <div class="form-row m-4">
             <div class="col mx-2">
-                <MudTextField Variant="Variant.Outlined" Label="Tên nhân viên" @bind-Value="_employee.Name"/>
+                <MudTextField Variant="Variant.Outlined" Label="Họ tên nhân viên"
+                              @bind-Value="_employee.Name" Required="true"
+                              RequiredError="Không được để trống họ tên" />
             </div>
             <div class="col mx-2">
-                <MudTextField Variant="Variant.Outlined" Label="Email" @bind-Value="_employee.Email" />
+                <MudTextField Variant="Variant.Outlined" Label="Email"
+                              @bind-Value="_employee.Email" Required="true"
+                              RequiredError="Không được để trống email" />
             </div>
-            
+
         </div>
         <div class="form-row m-4">
             <div class="col mx-2">
-                <MudDatePicker Date="_employee.Birth"
+                <MudDatePicker @bind-Date="_employee.Birth"
                                PickerVariant="PickerVariant.Dialog"
                                Variant="Variant.Outlined"
                                Label="Ngày sinh"
-                               Text="1/1/2000"
+                               TitleDateFormat="dd/MM/yyyy"
                                DateFormat="dd/MM/yyyy"
-                               MaxDate="@DateTime.Now"/>
+                               MaxDate="@DateTime.Now"
+                               Required="true"
+                               RequiredError="Không được để trống ngày sinh" />
             </div>
             <div class="col mx-2">
                 <MudText>Giới tính</MudText>
-                <MudRadioGroup @bind-SelectedOption="_employee.Gender">
-                    <MudRadio Option="@nam" Color="Color.Primary" Dense="true">Nam</MudRadio>
-                    <MudRadio Option="@nam" Color="Color.Secondary" Dense="false">Nữ</MudRadio>
+                <MudRadioGroup @bind-SelectedOption="_employee.Gender" Required="true"
+                               RequiredError="Không được để trống giới tính">
+                    <MudRadio Option="_nam" Color="Color.Primary" Dense="true">Nam</MudRadio>
+                    <MudRadio Option="_nu" Color="Color.Secondary" Dense="false">Nữ</MudRadio>
                 </MudRadioGroup>
             </div>
         </div>
@@ -38,25 +48,32 @@
                 <MudTextField @bind-Value="_employee.PhoneNumber"
                               Variant="Variant.Outlined"
                               Label="Số điện thoại"
-                              Adornment="Adornment.Start"/>
+                              Adornment="Adornment.None"
+                              Required="true"
+                              RequiredError="Không được để trống số điện thoại" />
             </div>
             <div class="col mx-2">
                 <MudTextField @bind-Value="_employee.Wage"
                               Variant="Variant.Outlined"
                               Label="Lương cơ bản"
                               Adornment="Adornment.Start"
-                              AdornmentIcon="@Icons.Material.Filled.AttachMoney"/>
+                              AdornmentIcon="@Icons.Material.Filled.AttachMoney" />
             </div>
         </div>
         <div class="form-row m-4">
             <div class="col mx-2">
                 <MudSelect @bind-Value="@_employee.DepartmentId"
                            T="int?"
-                           Label="Phòng ban" Strict="true" 
+                           Label="Phòng ban" Strict="true"
                            Variant="Variant.Outlined"
-                           AnchorOrigin="Origin.BottomCenter">
-                    <MudSelectItem T="int?" Value="1">gigi</MudSelectItem>
-                    <MudSelectItem T="int?" Value="1" />
+                           AnchorOrigin="Origin.BottomCenter"
+                           Required="true"
+                           RequiredError="Không được để trống phòng ban">
+                    @foreach (var department in _listDepartments)
+                    {
+                        <MudSelectItem T="int?" Value="@department.DepartmentId">@department.Name</MudSelectItem>
+                    }
+
 
                 </MudSelect>
             </div>
@@ -65,24 +82,59 @@
                            T="int?"
                            Label="Chức vụ" Strict="true"
                            Variant="Variant.Outlined"
-                           AnchorOrigin="Origin.BottomCenter">
-                    <MudSelectItem T="int?" Value="1">gigi</MudSelectItem>
-                    <MudSelectItem T="int?" Value="1" />
+                           AnchorOrigin="Origin.BottomCenter"
+                           Required="true"
+                           RequiredError="Không được để trống chức vụ">
+                    @foreach (var position in _listPositions)
+                    {
+                        <MudSelectItem T="int?" Value="@position.PositionId">@position.Name</MudSelectItem>
+                    }
                 </MudSelect>
             </div>
         </div>
         <div class="form-row m-4">
             <div class="col mx-2">
                 <MudTextField @bind-Value="_employee.Description"
-                              T="string" Label="Mô tả" 
-                              Variant="Variant.Outlined" 
+                              T="string" Label="Mô tả"
+                              Variant="Variant.Outlined"
                               Lines="4" />
             </div>
         </div>
-    </EditForm>
+        <div class="form-row m-4">
+            <div class="col text-center">
+                <MudButton OnClick="OnInsertEmployee"
+                           Variant="Variant.Filled"
+                           Color="Color.Success"
+                           Disabled="@(!_success)">
+                    Thêm
+                </MudButton>
+            </div>
+        </div>
+    </MudForm>
 </div>
 
 @code {
     private Employee _employee = new Employee();
-    String nam = "nam";
+    private string _nam = "nam";
+    private string _nu = "nữ";
+    private bool _success;
+    private List<Models.Position> _listPositions;
+    private List<Department> _listDepartments;
+
+    protected override void OnInitialized()
+    {
+        _listDepartments = DepartmentService.GetAllDepartments();
+        _listPositions = PositionService.GetAllPositions();
+    }
+
+    void OnInsertEmployee()
+    {
+        _employee.JoinDate = DateTime.Now;
+        if (_employee.Wage == null)
+        {
+            _employee.Wage = PositionService.GetPosition((int)_employee.PositionId).AverageWage;
+        }
+        EmployeeService.AddEmployee(_employee);
+        NavigationManager.NavigateTo($"/index"); // chua fix link
+    }
 }

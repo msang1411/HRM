@@ -7,20 +7,19 @@ using System.Threading.Tasks;
 
 namespace HRM.Services
 {
-    public class EmployeeService
+    public class DepartmentService
     {
         readonly IDbContextFactory<HRMContext> _dbContextFactory;
 
-        public EmployeeService(IDbContextFactory<HRMContext> dbContextFactory)
+        public DepartmentService(IDbContextFactory<HRMContext> dbContextFactory)
         {
             _dbContextFactory = dbContextFactory;
         }
 
-        public void AddEmployee(Employee employee)
+        public List<Department> GetAllDepartments()
         {
             using var context = _dbContextFactory.CreateDbContext();
-            context.Employees.Add(employee);
-            context.SaveChanges();
+            return context.Departments.ToList();
         }
     }
 }
