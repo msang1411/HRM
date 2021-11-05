@@ -1,0 +1,54 @@
+﻿@page "/employee"
+@using HRM.Components
+@using HRM.Models
+@using HRM.Services
+@using MudBlazor
+@inject EmployeeService EmployeeService
+
+
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="3">
+        <MudPaper Class="text-center py-8">
+            <div class="my-3">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfYi6KIX_Q1h-ZWkASf29RMe15B0LwUSuszhbrG_C8HQ8jC70XDYrrgonZ6fs1iM7bsuA&usqp=CAU"
+                     style="width:50%; border-radius:50%" />
+            </div>
+            <MudText Typo="Typo.h4" Inline="false">Pham minh Sang</MudText>
+            <MudText Typo="Typo.subtitle1" Inline="false">sang@gmail.com</MudText>
+            <div class="my-3">
+                <MudButton Color="Color.Success"
+                           Variant="Variant.Filled"
+                           EndIcon="@Icons.Material.Filled.Edit">
+                    Sửa thông tin
+                </MudButton>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="8">
+        <MudPaper Class="py-8">
+            <MudGrid>
+                <MudItem xs="6" Class="p-5">
+                    <p style="font-size:20px">Chức vụ: Bố đời</p>
+                    <p style="font-size:20px">ngày sinh: 11/23/4599</p>
+                    <p style="font-size:20px">Giới tính: đực</p>
+                </MudItem>
+                <MudItem xs="6" Class="p-5">
+                    <p style="font-size:20px">Phòng ban: vip pro luxury</p>
+                    <p style="font-size:20px">Tuổi: 49</p>
+                    <p style="font-size:20px">Số diện thoại: 00999999999</p>
+                </MudItem>
+                <MudItem xs="12" Class="p-5">
+                    <p style="font-size:30px; font-weight:bold">Mô tả</p>
+                    <p style="font-size:20px">Khi đọc những tác phẩm văn học, chúng ta hầu như biết đến tiểu thuyết, 
+                    thơ, truyện ngắn, truyện dài… là nhiều. Một số còn tìm hiểu thêm cả tản văn, 
+                    tùy bút, tạp kí… Nhưng có một thể loại văn học khá nhỏ bé, khẽ nép mình bên các anh chị ở trên, 
+                    tủi thân vì ít ai để ý nâng niu giống như cái tên của nó: “ Đoản văn ”</p>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+
+}
