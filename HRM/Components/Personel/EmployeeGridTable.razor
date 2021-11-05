@@ -1,15 +1,14 @@
-﻿@page "/test"
-
-@using HRM.Services
+﻿@using HRM.Services
 @using HRM.Models
 @using MudBlazor
 @inject EmployeeService EmployeeService
 @inject PositionService PositionService 
 @inject DepartmentService DepartmentService
 
-<MudTable Items="@_listEmployee" Hover="true">
+<MudTable Items="@_listEmployee" Hover="true"
+          Filter="new Func<Employee,bool>(FilterFunc)">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Periodic Elements</MudText>
+        <MudText Typo="Typo.h6">Danh sách nhân viên</MudText>
         <MudSpacer />
         <MudTextField @bind-Value="_searchStr" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
@@ -24,7 +23,7 @@
     <RowTemplate>
         <MudTd DataLabel="Email">@context.Email</MudTd>
         <MudTd DataLabel="Họ tên">@context.Name</MudTd>
-        <MudTd DataLabel="Tuổi">@context.Birth</MudTd>
+        <MudTd DataLabel="Tuổi">@getAge(context.Birth.ToString())</MudTd>
         <MudTd DataLabel="Chức vụ">@(PositionService.GetPosition((int)context.PositionId).Name)</MudTd>
         <MudTd DataLabel="Phòng">@(DepartmentService.GetDepartment((int)context.DepartmentId).Name)</MudTd>
         <MudTd DataLabel="Số điện thoại">@("0" + context.PhoneNumber)</MudTd>
@@ -37,9 +36,28 @@
 @code {
     private string _searchStr = "";
     private IEnumerable<Employee> _listEmployee;
+    private Employee selectEmployee = null;
 
     protected override void OnInitialized()
     {
         _listEmployee = EmployeeService.GetAll();
+    }
+
+    private bool FilterFunc(Employee employee) => Filter(employee, _searchStr);
+
+    private bool Filter(Employee employee, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (employee.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
+    int getAge(string DateStr)
+    {
+        string[] arrDateTime = DateStr.Split(" ");
+        string[] arrDate = arrDateTime[0].Split("/");
+        return DateTime.Now.Year - int.Parse(arrDate[2]);
     }
 }

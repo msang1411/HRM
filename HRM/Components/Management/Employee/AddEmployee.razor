@@ -1,4 +1,4 @@
-﻿@page "/personel/new-employee"
+﻿@page "/management/new-employee"
 
 @inject HRM.Services.EmployeeService EmployeeService
 @inject HRM.Services.PositionService PositionService
@@ -8,6 +8,7 @@
 @using MudBlazor
 
 <div class="container">
+    <MudText Typo="Typo.h2" Class="text-center m-6" Style="font-weight: bold">Thêm nhân viên</MudText>
     <MudForm Model="_employee" @bind-IsValid="_success" class="my-lg-5 p-3 bg-white shadow-lg">
         <div class="form-row m-4">
             <div class="col mx-2">
@@ -135,6 +136,6 @@
             _employee.Wage = PositionService.GetPosition((int)_employee.PositionId).AverageWage;
         }
         EmployeeService.AddEmployee(_employee);
-        NavigationManager.NavigateTo($"/index"); // chua fix link
+        NavigationManager.NavigateTo($"/management/list-employee");
     }
 }
