@@ -22,5 +22,11 @@ namespace HRM.Services
             context.Employees.Add(employee);
             context.SaveChanges();
         }
+
+        public List<Employee> GetAll()
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            return context.Employees.ToList();
+        }
     }
 }

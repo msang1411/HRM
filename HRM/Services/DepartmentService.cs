@@ -21,5 +21,11 @@ namespace HRM.Services
             using var context = _dbContextFactory.CreateDbContext();
             return context.Departments.ToList();
         }
+
+        public Department GetDepartment(int id)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            return context.Departments.Where(x => x.DepartmentId == id).FirstOrDefault();
+        }
     }
 }

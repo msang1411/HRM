@@ -1,0 +1,45 @@
+﻿@page "/test"
+
+@using HRM.Services
+@using HRM.Models
+@using MudBlazor
+@inject EmployeeService EmployeeService
+@inject PositionService PositionService 
+@inject DepartmentService DepartmentService
+
+<MudTable Items="@_listEmployee" Hover="true">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Periodic Elements</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchStr" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Email</MudTh>
+        <MudTh>Họ tên</MudTh>
+        <MudTh>Tuổi</MudTh>
+        <MudTh>Chức vụ</MudTh>
+        <MudTh>Phòng</MudTh>
+        <MudTh>Số điện thoại</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Email">@context.Email</MudTd>
+        <MudTd DataLabel="Họ tên">@context.Name</MudTd>
+        <MudTd DataLabel="Tuổi">@context.Birth</MudTd>
+        <MudTd DataLabel="Chức vụ">@(PositionService.GetPosition((int)context.PositionId).Name)</MudTd>
+        <MudTd DataLabel="Phòng">@(DepartmentService.GetDepartment((int)context.DepartmentId).Name)</MudTd>
+        <MudTd DataLabel="Số điện thoại">@("0" + context.PhoneNumber)</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private string _searchStr = "";
+    private IEnumerable<Employee> _listEmployee;
+
+    protected override void OnInitialized()
+    {
+        _listEmployee = EmployeeService.GetAll();
+    }
+}
