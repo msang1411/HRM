@@ -136,6 +136,6 @@
             _employee.Wage = PositionService.GetPosition((int)_employee.PositionId).AverageWage;
         }
         EmployeeService.AddEmployee(_employee);
-        NavigationManager.NavigateTo($"/management/list-employee");
+        NavigationManager.NavigateTo($"/management/list-employees");
     }
 }

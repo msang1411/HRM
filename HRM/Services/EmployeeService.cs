@@ -28,5 +28,11 @@ namespace HRM.Services
             using var context = _dbContextFactory.CreateDbContext();
             return context.Employees.ToList();
         }
+
+        public Employee GetEmployee(int id)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            return context.Employees.Where(x => x.EmployeeId == id).FirstOrDefault();
+        }
     }
 }

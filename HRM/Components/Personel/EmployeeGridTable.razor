@@ -2,13 +2,21 @@
 @using HRM.Models
 @using MudBlazor
 @inject EmployeeService EmployeeService
-@inject PositionService PositionService 
+@inject PositionService PositionService
 @inject DepartmentService DepartmentService
+@inject NavigationManager NavigationManager
 
 <MudTable Items="@_listEmployee" Hover="true"
           Filter="new Func<Employee,bool>(FilterFunc)">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Danh sách nhân viên</MudText>
+        <MudSpacer />
+        <MudLink Href="/management/new-employee"
+                 Typo="Typo.button"
+                 Color="Color.Success"
+                 Class="mx-1">
+            Thêm nhân viên
+        </MudLink>
         <MudSpacer />
         <MudTextField @bind-Value="_searchStr" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
@@ -22,8 +30,10 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Email">@context.Email</MudTd>
-        <MudTd DataLabel="Họ tên">@context.Name</MudTd>
-        <MudTd DataLabel="Tuổi">@getAge(context.Birth.ToString())</MudTd>
+        <MudTd DataLabel="Họ tên">
+            <MudLink Href="@($"employee/profile/{context.EmployeeId}")" Underline="Underline.Hover">@context.Name</MudLink>
+        </MudTd>
+        <MudTd DataLabel="Tuổi">@GetAge(context.Birth.ToString())</MudTd>
         <MudTd DataLabel="Chức vụ">@(PositionService.GetPosition((int)context.PositionId).Name)</MudTd>
         <MudTd DataLabel="Phòng">@(DepartmentService.GetDepartment((int)context.DepartmentId).Name)</MudTd>
         <MudTd DataLabel="Số điện thoại">@("0" + context.PhoneNumber)</MudTd>
@@ -54,7 +64,7 @@
         return false;
     }
 
-    int getAge(string DateStr)
+    int GetAge(string DateStr)
     {
         string[] arrDateTime = DateStr.Split(" ");
         string[] arrDate = arrDateTime[0].Split("/");

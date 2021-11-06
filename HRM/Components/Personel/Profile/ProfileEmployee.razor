@@ -1,10 +1,11 @@
-﻿@page "/employee"
+﻿@page "/employee/profile/{EmployeeId:int}"
 @using HRM.Components
 @using HRM.Models
 @using HRM.Services
 @using MudBlazor
 @inject EmployeeService EmployeeService
-
+@inject DepartmentService DepartmentService
+@inject PositionService PositionService
 
 <MudGrid Justify="Justify.Center">
     <MudItem xs="3">
@@ -13,8 +14,8 @@
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfYi6KIX_Q1h-ZWkASf29RMe15B0LwUSuszhbrG_C8HQ8jC70XDYrrgonZ6fs1iM7bsuA&usqp=CAU"
                      style="width:50%; border-radius:50%" />
             </div>
-            <MudText Typo="Typo.h4" Inline="false">Pham minh Sang</MudText>
-            <MudText Typo="Typo.subtitle1" Inline="false">sang@gmail.com</MudText>
+            <MudText Typo="Typo.h4" Inline="false">@_employee.Name</MudText>
+            <MudText Typo="Typo.subtitle1" Inline="false">@_employee.Email</MudText>
             <div class="my-3">
                 <MudButton Color="Color.Success"
                            Variant="Variant.Filled"
@@ -28,21 +29,18 @@
         <MudPaper Class="py-8">
             <MudGrid>
                 <MudItem xs="6" Class="p-5">
-                    <p style="font-size:20px">Chức vụ: Bố đời</p>
-                    <p style="font-size:20px">ngày sinh: 11/23/4599</p>
-                    <p style="font-size:20px">Giới tính: đực</p>
+                    <p style="font-size:20px">Chức vụ: @_position.Name</p>
+                    <p style="font-size:20px">ngày sinh: @GetDate(_employee.Birth.ToString())</p>
+                    <p style="font-size:20px">Giới tính: @_employee.Gender</p>
                 </MudItem>
                 <MudItem xs="6" Class="p-5">
-                    <p style="font-size:20px">Phòng ban: vip pro luxury</p>
-                    <p style="font-size:20px">Tuổi: 49</p>
-                    <p style="font-size:20px">Số diện thoại: 00999999999</p>
+                    <p style="font-size:20px">Phòng ban: @_department.Name</p>
+                    <p style="font-size:20px">Tuổi: @GetAge(_employee.Birth.ToString())</p>
+                    <p style="font-size:20px">Số diện thoại: 0@_employee.PhoneNumber</p>
                 </MudItem>
                 <MudItem xs="12" Class="p-5">
                     <p style="font-size:30px; font-weight:bold">Mô tả</p>
-                    <p style="font-size:20px">Khi đọc những tác phẩm văn học, chúng ta hầu như biết đến tiểu thuyết, 
-                    thơ, truyện ngắn, truyện dài… là nhiều. Một số còn tìm hiểu thêm cả tản văn, 
-                    tùy bút, tạp kí… Nhưng có một thể loại văn học khá nhỏ bé, khẽ nép mình bên các anh chị ở trên, 
-                    tủi thân vì ít ai để ý nâng niu giống như cái tên của nó: “ Đoản văn ”</p>
+                    <p style="font-size:20px">@_employee.Description</p>
                 </MudItem>
             </MudGrid>
         </MudPaper>
@@ -50,5 +48,29 @@
 </MudGrid>
 
 @code {
+    [Parameter] public int EmployeeId { get; set; }
+    private Employee _employee;
+    private Models.Position _position;
+    private Department _department;
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _employee = EmployeeService.GetEmployee(EmployeeId);
+        _position = PositionService.GetPosition((int)_employee.PositionId);
+        _department = DepartmentService.GetDepartment((int)_employee.DepartmentId);
+    }
+
+    string GetDate(string DateStr)
+    {
+        return DateStr.Split(" ")[0];
+    }
+
+    int GetAge(string DateStr)
+    {
+        string[] arrDateTime = DateStr.Split(" ");
+        string[] arrDate = arrDateTime[0].Split("/");
+        return DateTime.Now.Year - int.Parse(arrDate[2]);
+    }
 }
