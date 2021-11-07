@@ -27,5 +27,26 @@ namespace HRM.Services
             using var context = _dbContextFactory.CreateDbContext();
             return context.Departments.Where(x => x.DepartmentId == id).FirstOrDefault();
         }
+
+        public void AddDepartment(Department department)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            context.Add(department);
+            context.SaveChanges();
+        }
+
+        public void Delete(Department department)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            context.Departments.Remove(department);
+            context.SaveChanges();
+        }
+
+        public void Update(Department department)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            context.Departments.Update(department);
+            context.SaveChanges();
+        }
     }
 }

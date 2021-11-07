@@ -34,5 +34,12 @@ namespace HRM.Services
             using var context = _dbContextFactory.CreateDbContext();
             return context.Employees.Where(x => x.EmployeeId == id).FirstOrDefault();
         }
+
+        public void Update(Employee employee)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            context.Employees.Update(employee);
+            context.SaveChanges();
+        }
     }
 }

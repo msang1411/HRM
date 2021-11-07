@@ -1,0 +1,260 @@
+﻿@page "/management/configuration"
+@inject PositionService PositionService
+@inject DepartmentService DepartmentService 
+
+<div>
+    <div class="text-center">
+        <MudText Typo="Typo.h2" style="font-weight:bold" Class="m-3">Tùy chỉnh các thông tin</MudText>
+    </div>
+    <MudGrid Class="py-2 mx-4">
+        <MudItem xs="12" md="8" lg="4">
+            <MudPaper Elevation="25" Class="pa-4" Style="position: relative;">
+                <MudForm Model="_position" @bind-IsValid="@_successPosition" class="d-flex justify-space-between">
+                    <MudTextField Variant="Variant.Outlined"
+                                  Label="Thêm chức vụ"
+                                  Margin="Margin.Dense"
+                                  Class="mr-3"
+                                  @bind-Value="_position.Name"
+                                  Required="true"
+                                  RequiredError="Không được để trống" />
+                    <MudTextField Variant="Variant.Outlined"
+                                  Label="Lương cơ bản"
+                                  Margin="Margin.Dense"
+                                  Class="mr-3"
+                                  @bind-Value="_position.AverageWage"
+                                  Required="true"
+                                  RequiredError="Không được để trống"
+                                  ErrorText="chỉ chứa chữ số"/>
+                    <MudIconButton OnClick="OnAddPosition"
+                                   Icon="@Icons.Material.Filled.Add"
+                                   Color="Color.Success"
+                                   Disabled="@(!_successPosition)" />
+                </MudForm>
+                <MudList>
+                    @foreach (var position in _listPositions)
+                    {
+                    <div class="d-flex">
+                        @if (_isEditPosition == true && position.PositionId == _positionIdEdit)
+                        {
+                        <MudForm Model="_positionEdit" @bind-IsValid="@_successEditPosition" class="d-flex justify-space-between">
+                            <MudTextField Variant="Variant.Outlined"
+                                          Label="@_positionEdit.Name"
+                                          Margin="Margin.Dense"
+                                          Class="mr-3"
+                                          @bind-Value="_positionEdit.Name"
+                                          Required="true"
+                                          RequiredError="Không được để trống" />
+                            <MudTextField Variant="Variant.Outlined"
+                                          Label="@_positionEdit.AverageWage.ToString()"
+                                          Margin="Margin.Dense"
+                                          Class="mr-3"
+                                          @bind-Value="_positionEdit.AverageWage"
+                                          Required="true"
+                                          RequiredError="Không được để trống"
+                                          ErrorText="chỉ chứa chữ số" />
+                            <MudIconButton OnClick="()=>OnConfirmEditPosition(_positionEdit)"
+                                           Icon="@Icons.Material.Filled.Save"
+                                           Color="Color.Success"
+                                           Disabled="@(!_successEditPosition)" />
+                            <MudIconButton OnClick="OnCancelEditPosition"
+                                           Icon="@Icons.Material.Filled.Cancel"
+                                           Color="Color.Error"/>
+                        </MudForm>
+                        }
+                        else
+                        {
+                            <MudListItem Text="@(position.Name)" />
+                            <MudListItem Text="@(position.AverageWage + " VND")" />
+                            <MudIconButton OnClick="()=>OnEditPosition(position)"
+                                           Icon="@Icons.Material.Filled.Edit"/>
+                            <MudIconButton OnClick="()=>OnDeletePosition(position)"
+                                           Icon="@Icons.Material.Filled.Delete" />
+                        }
+                    </div>
+                    }
+                </MudList>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" md="6" lg="3">
+            <MudPaper Elevation="25" Class="pa-4" Style="position: relative;">
+                <MudForm Model="_department" @bind-IsValid="@_successDepartment" class="d-flex justify-space-between">
+                    <MudTextField Variant="Variant.Outlined"
+                                  Label="Thêm phòng ban"
+                                  Margin="Margin.Dense"
+                                  Class="mr-3"
+                                  @bind-Value="_department.Name"
+                                  Required="true"
+                                  RequiredError="Không được để trống"/>
+                    <MudIconButton OnClick="OnAddDepartment"
+                                   Icon="@Icons.Material.Filled.Add"
+                                   Color="Color.Success"
+                                   Disabled="@(!_successDepartment)">
+                    </MudIconButton>
+                </MudForm>
+                <MudList>
+                    @foreach (var department in _listDepartments)
+                    {
+                    <div class="d-flex">
+                        @if (_isEditDepartment == true && department.DepartmentId == _departmentIdEdit)
+                        {
+                            <MudForm Model="_departmentEdit" @bind-IsValid="@_successEditDepartment" class="d-flex justify-space-between">
+                                <MudTextField Variant="Variant.Outlined"
+                                              Label="@_departmentEdit.Name"
+                                              Margin="Margin.Dense"
+                                              Class="mr-3"
+                                              @bind-Value="_departmentEdit.Name"
+                                              Required="true"
+                                              RequiredError="Không được để trống" />
+                                <MudIconButton OnClick="()=>OnConfirmEditDepartment(_departmentEdit)"
+                                               Icon="@Icons.Material.Filled.Save"
+                                               Color="Color.Success"
+                                               Disabled="@(!_successEditDepartment)" />
+                                <MudIconButton OnClick="OnCancelEditDepartment"
+                                               Icon="@Icons.Material.Filled.Cancel"
+                                               Color="Color.Error" />
+                            </MudForm>
+                        }
+                        else
+                        {
+                            <MudListItem Text="@department.Name" />
+                            <MudIconButton OnClick="()=>OnEditDepartment(department)"
+                                           Icon="@Icons.Material.Filled.Edit"/>
+                            <MudIconButton OnClick="()=>OnDeleteDepartment(department)"
+                                           Icon="@Icons.Material.Filled.Delete" />
+                        }
+                    </div>
+                    }
+                </MudList>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</div>
+
+<MudMessageBox @ref="confirmBox" Title="Xóa ?">
+    <MessageContent>
+        Bạn chắc chắn muốn <b><i>xóa</i></b> không?
+    </MessageContent>
+    <YesButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.DeleteForever">Xóa</MudButton>
+    </YesButton>
+    <NoButton>
+        <MudButton Variant="Variant.Filled">Không</MudButton>
+    </NoButton>
+</MudMessageBox>
+
+@code {
+    private Models.Position _position = new Models.Position();
+    private Department _department = new Department();
+    private List<Models.Position> _listPositions;
+    private List<Department> _listDepartments;
+    private bool _successPosition;
+    private bool _successDepartment;
+
+    private bool _isEditPosition = false;
+    private int _positionIdEdit = -1;
+    private bool _successEditPosition;
+    private Models.Position _positionEdit;
+
+    private bool _isEditDepartment = false;
+    private int _departmentIdEdit = -1;
+    private bool _successEditDepartment;
+    private Department _departmentEdit;
+
+    MudMessageBox confirmBox { get; set; }
+    string state = "Thông báo không thể hiện vào lúc này!";
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _listDepartments = DepartmentService.GetAllDepartments();
+        _listPositions = PositionService.GetAllPositions();
+    }
+
+    void OnAddPosition()
+    {
+        PositionService.AddPosition(_position);
+        _listPositions.Add(_position);
+        _position = new Models.Position();
+        _successPosition = false;
+    }
+
+    void OnAddDepartment()
+    {
+        DepartmentService.AddDepartment(_department);
+        _listDepartments.Add(_department);
+        _department = new Department();
+        _successDepartment = false;
+    }
+
+    async Task OnDeletePosition(Models.Position position)
+    {
+        DialogOptions options = new() { MaxWidth = MaxWidth.Small };
+        bool? result = await confirmBox.Show(options);
+        state = result == null ? "Không xóa" : "Xóa";
+
+        if (result == true)
+        {
+            PositionService.Delete(position);
+            _listPositions.Remove(position);
+        }
+    }
+
+    async Task OnDeleteDepartment(Department department)
+    {
+        DialogOptions options = new() { MaxWidth = MaxWidth.Small };
+        bool? result = await confirmBox.Show(options);
+        state = result == null ? "Không xóa" : "Xóa";
+
+        if (result == true)
+        {
+            DepartmentService.Delete(department);
+            _listDepartments.Remove(department);
+        }
+    }
+
+    void OnEditPosition(Models.Position position)
+    {
+        _isEditPosition = true;
+        _positionIdEdit = position.PositionId;
+        _positionEdit = PositionService.GetPosition(position.PositionId);
+    }
+
+    void OnCancelEditPosition()
+    {
+        _isEditPosition = false;
+        _positionIdEdit = -1;
+        _positionEdit = new Models.Position();
+    }
+
+    void OnConfirmEditPosition(Models.Position position)
+    {
+        PositionService.Update(position);
+        _listPositions = PositionService.GetAllPositions();
+        _isEditPosition = false;
+        _positionIdEdit = -1;
+        _positionEdit = new Models.Position();
+    }
+
+    void OnEditDepartment(Department department)
+    {
+        _isEditDepartment = true;
+        _departmentIdEdit = department.DepartmentId;
+        _departmentEdit = DepartmentService.GetDepartment(department.DepartmentId);
+    }
+
+    void OnCancelEditDepartment()
+    {
+        _isEditDepartment = false;
+        _departmentIdEdit = -1;
+        _departmentEdit = new Department();
+    }
+
+    void OnConfirmEditDepartment(Department department)
+    {
+        DepartmentService.Update(department);
+        _listDepartments = DepartmentService.GetAllDepartments();
+        _isEditDepartment = false;
+        _departmentIdEdit = -1;
+        _departmentEdit = new Department();
+    }
+}

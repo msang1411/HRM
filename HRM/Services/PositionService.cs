@@ -27,5 +27,26 @@ namespace HRM.Services
             using var context = _dbContextFactory.CreateDbContext();
             return context.Positions.Where(x => x.PositionId == id).FirstOrDefault();
         }
+
+        public void AddPosition(Position position)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            context.Add(position);
+            context.SaveChanges();
+        }
+
+        public void Delete(Position position)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            context.Positions.Remove(position);
+            context.SaveChanges();
+        }
+
+        public void Update(Position position)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            context.Positions.Update(position);
+            context.SaveChanges();
+        }
     }
 }
