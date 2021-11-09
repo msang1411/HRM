@@ -7,6 +7,8 @@
 @inject DepartmentService DepartmentService
 @inject PositionService PositionService
 @inject IDialogService Dialog
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject NavigationManager NavigationManager
 
 <MudGrid Justify="Justify.Center">
     <MudItem xs="3">
@@ -25,6 +27,12 @@
                                Variant="Variant.Filled"
                                EndIcon="@Icons.Material.Filled.Edit">
                         Sửa thông tin
+                    </MudButton>
+                    <MudButton OnClick="OnCreateAccount"
+                               Color="Color.Info"
+                               Variant="Variant.Filled"
+                               EndIcon="@Icons.Material.Filled.AccountCircle">
+                        Tạo tài khoản
                     </MudButton>
                 }
                 else
@@ -45,7 +53,7 @@
             </div>
         </MudPaper>
     </MudItem>
-    
+
     <MudItem xs="8">
         <MudPaper Class="py-8">
             @if (_isEdit == false)
@@ -192,6 +200,13 @@
         _employee = EmployeeService.GetEmployee(EmployeeId);
         _position = PositionService.GetPosition((int)_employee.PositionId);
         _department = DepartmentService.GetDepartment((int)_employee.DepartmentId);
+    }
+
+    void OnCreateAccount()
+    {
+        sessionStorage.SetItemAsync("employee-create-account", _employee);
+        Task.Delay(500);
+        NavigationManager.NavigateTo($"/management/create-account");
     }
 
     string GetDate(string DateStr)

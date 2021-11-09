@@ -1,6 +1,6 @@
 ﻿@page "/management/configuration"
 @inject PositionService PositionService
-@inject DepartmentService DepartmentService 
+@inject DepartmentService DepartmentService
 
 <div>
     <div class="text-center">
@@ -24,7 +24,7 @@
                                   @bind-Value="_position.AverageWage"
                                   Required="true"
                                   RequiredError="Không được để trống"
-                                  ErrorText="chỉ chứa chữ số"/>
+                                  ErrorText="chỉ chứa chữ số" />
                     <MudIconButton OnClick="OnAddPosition"
                                    Icon="@Icons.Material.Filled.Add"
                                    Color="Color.Success"
@@ -33,44 +33,44 @@
                 <MudList>
                     @foreach (var position in _listPositions)
                     {
-                    <div class="d-flex">
-                        @if (_isEditPosition == true && position.PositionId == _positionIdEdit)
-                        {
-                        <MudForm Model="_positionEdit" @bind-IsValid="@_successEditPosition" class="d-flex justify-space-between">
-                            <MudTextField Variant="Variant.Outlined"
-                                          Label="@_positionEdit.Name"
-                                          Margin="Margin.Dense"
-                                          Class="mr-3"
-                                          @bind-Value="_positionEdit.Name"
-                                          Required="true"
-                                          RequiredError="Không được để trống" />
-                            <MudTextField Variant="Variant.Outlined"
-                                          Label="@_positionEdit.AverageWage.ToString()"
-                                          Margin="Margin.Dense"
-                                          Class="mr-3"
-                                          @bind-Value="_positionEdit.AverageWage"
-                                          Required="true"
-                                          RequiredError="Không được để trống"
-                                          ErrorText="chỉ chứa chữ số" />
-                            <MudIconButton OnClick="()=>OnConfirmEditPosition(_positionEdit)"
-                                           Icon="@Icons.Material.Filled.Save"
-                                           Color="Color.Success"
-                                           Disabled="@(!_successEditPosition)" />
-                            <MudIconButton OnClick="OnCancelEditPosition"
-                                           Icon="@Icons.Material.Filled.Cancel"
-                                           Color="Color.Error"/>
-                        </MudForm>
-                        }
-                        else
-                        {
-                            <MudListItem Text="@(position.Name)" />
-                            <MudListItem Text="@(position.AverageWage + " VND")" />
-                            <MudIconButton OnClick="()=>OnEditPosition(position)"
-                                           Icon="@Icons.Material.Filled.Edit"/>
-                            <MudIconButton OnClick="()=>OnDeletePosition(position)"
-                                           Icon="@Icons.Material.Filled.Delete" />
-                        }
-                    </div>
+                        <div class="d-flex">
+                            @if (_isEditPosition == true && position.PositionId == _positionIdEdit)
+                            {
+                                <MudForm Model="_positionEdit" @bind-IsValid="@_successEditPosition" class="d-flex justify-space-between">
+                                    <MudTextField Variant="Variant.Outlined"
+                                                  Label="@_positionEdit.Name"
+                                                  Margin="Margin.Dense"
+                                                  Class="mr-3"
+                                                  @bind-Value="_positionEdit.Name"
+                                                  Required="true"
+                                                  RequiredError="Không được để trống" />
+                                    <MudTextField Variant="Variant.Outlined"
+                                                  Label="@_positionEdit.AverageWage.ToString()"
+                                                  Margin="Margin.Dense"
+                                                  Class="mr-3"
+                                                  @bind-Value="_positionEdit.AverageWage"
+                                                  Required="true"
+                                                  RequiredError="Không được để trống"
+                                                  ErrorText="chỉ chứa chữ số" />
+                                    <MudIconButton OnClick="()=>OnConfirmEditPosition(_positionEdit)"
+                                                   Icon="@Icons.Material.Filled.Save"
+                                                   Color="Color.Success"
+                                                   Disabled="@(!_successEditPosition)" />
+                                    <MudIconButton OnClick="OnCancelEditPosition"
+                                                   Icon="@Icons.Material.Filled.Cancel"
+                                                   Color="Color.Error" />
+                                </MudForm>
+                            }
+                            else
+                            {
+                                <MudListItem Text="@(position.Name)" />
+                                <MudListItem Text="@(position.AverageWage + " VND")" />
+                                <MudIconButton OnClick="()=>OnEditPosition(position)"
+                                               Icon="@Icons.Material.Filled.Edit" />
+                                <MudIconButton OnClick="()=>OnDeletePosition(position)"
+                                               Icon="@Icons.Material.Filled.Delete" />
+                            }
+                        </div>
                     }
                 </MudList>
             </MudPaper>
@@ -84,7 +84,7 @@
                                   Class="mr-3"
                                   @bind-Value="_department.Name"
                                   Required="true"
-                                  RequiredError="Không được để trống"/>
+                                  RequiredError="Không được để trống" />
                     <MudIconButton OnClick="OnAddDepartment"
                                    Icon="@Icons.Material.Filled.Add"
                                    Color="Color.Success"
@@ -94,35 +94,35 @@
                 <MudList>
                     @foreach (var department in _listDepartments)
                     {
-                    <div class="d-flex">
-                        @if (_isEditDepartment == true && department.DepartmentId == _departmentIdEdit)
-                        {
-                            <MudForm Model="_departmentEdit" @bind-IsValid="@_successEditDepartment" class="d-flex justify-space-between">
-                                <MudTextField Variant="Variant.Outlined"
-                                              Label="@_departmentEdit.Name"
-                                              Margin="Margin.Dense"
-                                              Class="mr-3"
-                                              @bind-Value="_departmentEdit.Name"
-                                              Required="true"
-                                              RequiredError="Không được để trống" />
-                                <MudIconButton OnClick="()=>OnConfirmEditDepartment(_departmentEdit)"
-                                               Icon="@Icons.Material.Filled.Save"
-                                               Color="Color.Success"
-                                               Disabled="@(!_successEditDepartment)" />
-                                <MudIconButton OnClick="OnCancelEditDepartment"
-                                               Icon="@Icons.Material.Filled.Cancel"
-                                               Color="Color.Error" />
-                            </MudForm>
-                        }
-                        else
-                        {
-                            <MudListItem Text="@department.Name" />
-                            <MudIconButton OnClick="()=>OnEditDepartment(department)"
-                                           Icon="@Icons.Material.Filled.Edit"/>
-                            <MudIconButton OnClick="()=>OnDeleteDepartment(department)"
-                                           Icon="@Icons.Material.Filled.Delete" />
-                        }
-                    </div>
+                        <div class="d-flex">
+                            @if (_isEditDepartment == true && department.DepartmentId == _departmentIdEdit)
+                            {
+                                <MudForm Model="_departmentEdit" @bind-IsValid="@_successEditDepartment" class="d-flex justify-space-between">
+                                    <MudTextField Variant="Variant.Outlined"
+                                                  Label="@_departmentEdit.Name"
+                                                  Margin="Margin.Dense"
+                                                  Class="mr-3"
+                                                  @bind-Value="_departmentEdit.Name"
+                                                  Required="true"
+                                                  RequiredError="Không được để trống" />
+                                    <MudIconButton OnClick="()=>OnConfirmEditDepartment(_departmentEdit)"
+                                                   Icon="@Icons.Material.Filled.Save"
+                                                   Color="Color.Success"
+                                                   Disabled="@(!_successEditDepartment)" />
+                                    <MudIconButton OnClick="OnCancelEditDepartment"
+                                                   Icon="@Icons.Material.Filled.Cancel"
+                                                   Color="Color.Error" />
+                                </MudForm>
+                            }
+                            else
+                            {
+                                <MudListItem Text="@department.Name" />
+                                <MudIconButton OnClick="()=>OnEditDepartment(department)"
+                                               Icon="@Icons.Material.Filled.Edit" />
+                                <MudIconButton OnClick="()=>OnDeleteDepartment(department)"
+                                               Icon="@Icons.Material.Filled.Delete" />
+                            }
+                        </div>
                     }
                 </MudList>
             </MudPaper>

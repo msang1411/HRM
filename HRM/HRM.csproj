@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazored.SessionStorage" Version="2.2.0" />
     <PackageReference Include="microsoft.entityframeworkcore.sqlserver" Version="5.0.10" />
     <PackageReference Include="microsoft.entityframeworkcore.tools" Version="5.0.10">
       <PrivateAssets>all</PrivateAssets>

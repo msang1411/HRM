@@ -1,0 +1,19 @@
+﻿@page "/management/create-account"
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject NavigationManager NavigationManager
+
+@code {
+    private Employee _employee;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (await sessionStorage.GetItemAsync<Employee>("employee-create-account") == null)
+        {
+            NavigationManager.NavigateTo($"/");
+        }
+        else
+        {
+            _employee = await sessionStorage.GetItemAsync<Employee>("employee-create-account");
+        }
+    }
+}

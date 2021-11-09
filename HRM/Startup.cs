@@ -1,3 +1,4 @@
+using Blazored.SessionStorage;
 using HRM.Models;
 using HRM.Services;
 using Microsoft.AspNetCore.Builder;
@@ -37,6 +38,7 @@ namespace HRM
             );
 
             services.AddMudServices();
+            services.AddBlazoredSessionStorage();
 
             services.AddSingleton<AccountService>();
             services.AddSingleton<EmployeeService>();
