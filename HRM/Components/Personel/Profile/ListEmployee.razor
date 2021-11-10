@@ -1,0 +1,10 @@
+﻿@page "/employee/list-employees"
+@attribute [Authorize(Roles = "Admin,User")]
+
+<div class="container">
+    <EmployeeGridTable/>
+</div>
+
+@code {
+
+}

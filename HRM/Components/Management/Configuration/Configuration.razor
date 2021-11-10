@@ -1,6 +1,8 @@
 ﻿@page "/management/configuration"
 @inject PositionService PositionService
 @inject DepartmentService DepartmentService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize(Roles = "Admin")]
 
 <div>
     <div class="text-center">

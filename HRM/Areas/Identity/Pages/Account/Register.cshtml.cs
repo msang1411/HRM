@@ -20,6 +20,7 @@ using HRM.Areas.Identity.Data;
 namespace HRM.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
+    //[Authorize(Roles = "Admin")]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<HRMUser> _signInManager;
@@ -135,7 +136,7 @@ namespace HRM.Areas.Identity.Pages.Account
         {
             Models.Account acc = new Models.Account
             {
-                Account1 = Input.Account,
+                Account1 = Input.Account + "@gmail.com",
                 Password = Input.Password,
                 EmployeeId = Input.EmployeeId,
                 Role = Input.Role

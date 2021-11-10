@@ -4,6 +4,8 @@
 @inject HRM.Services.PositionService PositionService
 @inject HRM.Services.DepartmentService DepartmentService
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize(Roles = "Admin")]
 @using HRM.Models
 @using MudBlazor
 
@@ -134,6 +136,6 @@
             _employee.Wage = PositionService.GetPosition((int)_employee.PositionId).AverageWage;
         }
         EmployeeService.AddEmployee(_employee);
-        NavigationManager.NavigateTo($"/management/list-employees");
+        NavigationManager.NavigateTo($"/management/employees");
     }
 }

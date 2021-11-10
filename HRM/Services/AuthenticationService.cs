@@ -26,7 +26,7 @@ namespace HRM.Services
         }
         public Account GetCurrentAccount()
         {
-            var account = GetCurrentAccount();
+            var account = GetCurrentUserEmail();
             using var context = _contextFactory.CreateDbContext();
             return context.Accounts.FirstOrDefault(f => f.Account1.Equals(account));
         }

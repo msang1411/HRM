@@ -5,20 +5,26 @@
 @inject PositionService PositionService
 @inject DepartmentService DepartmentService
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize(Roles = "Admin,User")]
 
 <MudTable Items="@_listEmployee" Hover="true"
           Filter="new Func<Employee,bool>(FilterFunc)">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Danh sách nhân viên</MudText>
         <MudSpacer />
-        <MudLink Href="/management/new-employee"
-                 Typo="Typo.button"
-                 Color="Color.Success"
-                 Class="mx-1">
-            Thêm nhân viên
-        </MudLink>
-        <MudSpacer />
-        <MudTextField @bind-Value="_searchStr" Placeholder="Search" Adornment="Adornment.Start" 
+        <AuthorizeView Roles="Admin">
+            <Authorized Context="admin">
+                <MudLink Href="/management/new-employee"
+                         Typo="Typo.button"
+                         Color="Color.Success"
+                         Class="mx-1">
+                    Thêm nhân viên
+                </MudLink>
+                <MudSpacer />
+            </Authorized>
+        </AuthorizeView>
+        <MudTextField @bind-Value="_searchStr" Placeholder="Search" Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
                       Class="mt-0"></MudTextField>
     </ToolBarContent>

@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject AuthenticationService AuthenticationService
 @inject SignInManager<HRMUser> SignInManager
+@inject EmployeeService EmployeeService
 
 @using MudBlazor
 @using HRM.Components
@@ -20,10 +21,10 @@
             <MudSnackbarProvider />
             <MudLayout>
                 <div class="top-row px-4" style="background-color:#00ffff">
-                    <MudIconButton Icon="@Icons.Material.Filled.ExitToApp" 
-                                   Link="Identity/Account/Logout" 
-                                   Color="Color.Inherit"  
-                                   />
+                    <MudText><span class="d-none d-md-inline">Chào, </span>@_nameAccount</MudText>
+                    <MudIconButton Icon="@Icons.Material.Filled.ExitToApp"
+                                   Link="Identity/Account/Logout"
+                                   Color="Color.Inherit" />
                 </div>
                 <MudMainContent>
                     @Body
@@ -35,3 +36,17 @@
         <HRM.Components.Login.LoginRedirect />
     </NotAuthorized>
 </AuthorizeView>
+@code{
+    string _nameAccount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var works = AuthenticationService.GetCurrentAccount()?.EmployeeId;
+
+        if (works != null)
+        {
+            _nameAccount = EmployeeService.GetEmployee((int)works).Name;
+        }
+
+    }
+}

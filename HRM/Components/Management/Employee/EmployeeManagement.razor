@@ -1,8 +1,9 @@
-﻿@page "/management/list-employees"
+﻿@page "/management/employees"
 @using HRM.Components
+@attribute [Authorize(Roles = "Admin")]
 
 <div class="container">
-    <HRM.Components.Personel.EmployeeGridTable/>
+    <HRM.Components.Personel.EmployeeGridTable />
 </div>
 
 @code {

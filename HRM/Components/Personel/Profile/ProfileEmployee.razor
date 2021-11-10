@@ -9,6 +9,8 @@
 @inject IDialogService Dialog
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize(Roles = "Admin,User")]
 
 <MudGrid Justify="Justify.Center">
     <MudItem xs="3">
@@ -19,32 +21,36 @@
             </div>
             <MudText Typo="Typo.h4" Inline="false">@_employee.Name</MudText>
             <MudText Typo="Typo.subtitle1" Inline="false">@_employee.Email</MudText>
-            <div class="my-3">
-                @if (_isEdit == false)
-                {
-                    <MudButton OnClick="OnEditEmployee"
-                               Color="Color.Success"
-                               Variant="Variant.Filled"
-                               EndIcon="@Icons.Material.Filled.Edit">
-                        Sửa thông tin
-                    </MudButton>
-                }
-                else
-                {
-                    <MudButton OnClick="OnCancelEdit"
-                               Color="Color.Error"
-                               Variant="Variant.Filled"
-                               EndIcon="@Icons.Material.Filled.Cancel">
-                        Hủy
-                    </MudButton>
-                    <MudButton OnClick="OnSaveEdit"
-                               Color="Color.Success"
-                               Variant="Variant.Filled"
-                               EndIcon="@Icons.Material.Filled.Save">
-                        Lưu
-                    </MudButton>
-                }
-            </div>
+            <AuthorizeView Roles="Admin">
+                <Authorized Context="admin">
+                    <div class="my-3">
+                        @if (_isEdit == false)
+                        {
+                            <MudButton OnClick="OnEditEmployee"
+                                       Color="Color.Success"
+                                       Variant="Variant.Filled"
+                                       EndIcon="@Icons.Material.Filled.Edit">
+                                Sửa thông tin
+                            </MudButton>
+                        }
+                        else
+                        {
+                            <MudButton OnClick="OnCancelEdit"
+                                       Color="Color.Error"
+                                       Variant="Variant.Filled"
+                                       EndIcon="@Icons.Material.Filled.Cancel">
+                                Hủy
+                            </MudButton>
+                            <MudButton OnClick="OnSaveEdit"
+                                       Color="Color.Success"
+                                       Variant="Variant.Filled"
+                                       EndIcon="@Icons.Material.Filled.Save">
+                                Lưu
+                            </MudButton>
+                        }
+                    </div>
+                </Authorized>
+            </AuthorizeView>
         </MudPaper>
     </MudItem>
 
