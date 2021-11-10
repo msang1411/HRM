@@ -28,12 +28,6 @@
                                EndIcon="@Icons.Material.Filled.Edit">
                         Sửa thông tin
                     </MudButton>
-                    <MudButton OnClick="OnCreateAccount"
-                               Color="Color.Info"
-                               Variant="Variant.Filled"
-                               EndIcon="@Icons.Material.Filled.AccountCircle">
-                        Tạo tài khoản
-                    </MudButton>
                 }
                 else
                 {
@@ -200,13 +194,6 @@
         _employee = EmployeeService.GetEmployee(EmployeeId);
         _position = PositionService.GetPosition((int)_employee.PositionId);
         _department = DepartmentService.GetDepartment((int)_employee.DepartmentId);
-    }
-
-    void OnCreateAccount()
-    {
-        sessionStorage.SetItemAsync("employee-create-account", _employee);
-        Task.Delay(500);
-        NavigationManager.NavigateTo($"/management/create-account");
     }
 
     string GetDate(string DateStr)

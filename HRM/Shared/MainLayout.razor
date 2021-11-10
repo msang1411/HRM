@@ -1,16 +1,37 @@
 ﻿@inherits LayoutComponentBase
-@using MudBlazor
+@inject AuthenticationService AuthenticationService
+@inject SignInManager<HRMUser> SignInManager
 
-<div class="page" style="background-color: #dfffff">
-    <div class="sidebar" style="background-color: #00ffff">
-        <NavMenu />
-    </div>
-    <MudThemeProvider />
-    <MudDialogProvider />
-    <MudSnackbarProvider />
-    <MudLayout>
-        <MudMainContent>
-            @Body
-        </MudMainContent>
-    </MudLayout>
-</div>
+@using MudBlazor
+@using HRM.Components
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.AspNetCore.Mvc.ViewEngines
+@using Microsoft.AspNetCore.Identity;
+@using HRM.Areas.Identity.Data;
+
+<AuthorizeView>
+    <Authorized>
+        <div class="page" style="background-color: #dfffff">
+            <div class="sidebar" style="background-color: #00ffff">
+                <NavMenu />
+            </div>
+            <MudThemeProvider />
+            <MudDialogProvider />
+            <MudSnackbarProvider />
+            <MudLayout>
+                <div class="top-row px-4" style="background-color:#00ffff">
+                    <MudIconButton Icon="@Icons.Material.Filled.ExitToApp" 
+                                   Link="Identity/Account/Logout" 
+                                   Color="Color.Inherit"  
+                                   />
+                </div>
+                <MudMainContent>
+                    @Body
+                </MudMainContent>
+            </MudLayout>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <HRM.Components.Login.LoginRedirect />
+    </NotAuthorized>
+</AuthorizeView>

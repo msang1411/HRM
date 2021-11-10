@@ -8,9 +8,6 @@ namespace HRM.Models
 {
     public partial class HRMContext : DbContext
     {
-        /*public HRMContext()
-        {
-        }*/
 
         public HRMContext(DbContextOptions<HRMContext> options)
             : base(options)
@@ -25,6 +22,7 @@ namespace HRM.Models
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<LeaveApplication> LeaveApplications { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<Position> Positions { get; set; }
         public virtual DbSet<Recruitment> Recruitments { get; set; }
         public virtual DbSet<Salary> Salaries { get; set; }
@@ -45,20 +43,18 @@ namespace HRM.Models
 
             modelBuilder.Entity<Account>(entity =>
             {
-                entity.HasKey(e => e.AccountEmployee)
+                entity.HasKey(e => e.Account1)
                     .HasName("pk_account");
 
                 entity.ToTable("account");
 
-                entity.Property(e => e.AccountEmployee)
-                    .HasColumnType("text")
-                    .HasColumnName("account");
+                entity.Property(e => e.Account1).HasColumnName("account");
 
                 entity.Property(e => e.EmployeeId).HasColumnName("employee_id");
 
-                entity.Property(e => e.Password)
-                    .HasColumnType("text")
-                    .HasColumnName("password");
+                entity.Property(e => e.Password).HasColumnName("password");
+
+                entity.Property(e => e.Role).HasColumnName("role");
 
                 entity.HasOne(d => d.Employee)
                     .WithMany(p => p.Accounts)
@@ -112,9 +108,7 @@ namespace HRM.Models
             {
                 entity.ToTable("calendar");
 
-                entity.Property(e => e.CalendarId)
-                    .HasColumnType("text")
-                    .HasColumnName("calendar_id");
+                entity.Property(e => e.CalendarId).HasColumnName("calendar_id");
 
                 entity.Property(e => e.EndAt)
                     .HasColumnType("date")
@@ -138,9 +132,7 @@ namespace HRM.Models
 
                 entity.Property(e => e.EmployeeId).HasColumnName("employee_id");
 
-                entity.Property(e => e.CalendarId)
-                    .HasColumnType("text")
-                    .HasColumnName("calendar_id");
+                entity.Property(e => e.CalendarId).HasColumnName("calendar_id");
 
                 entity.Property(e => e.Shift).HasColumnName("shift");
 
@@ -214,9 +206,7 @@ namespace HRM.Models
 
                 entity.Property(e => e.Description).HasColumnName("description");
 
-                entity.Property(e => e.Email)
-                    .HasColumnType("text")
-                    .HasColumnName("email");
+                entity.Property(e => e.Email).HasColumnName("email");
 
                 entity.Property(e => e.Gender).HasColumnName("gender");
 
@@ -286,6 +276,28 @@ namespace HRM.Models
                     .HasConstraintName("fk_employee");
             });
 
+            modelBuilder.Entity<Notification>(entity =>
+            {
+                entity.HasKey(e => new { e.CreateAt, e.EmployeeId })
+                    .HasName("notification_pkey");
+
+                entity.ToTable("notification");
+
+                entity.Property(e => e.CreateAt).HasColumnName("create_at");
+
+                entity.Property(e => e.EmployeeId).HasColumnName("employee_id");
+
+                entity.Property(e => e.Content).HasColumnName("content");
+
+                entity.Property(e => e.Title).HasColumnName("title");
+
+                entity.HasOne(d => d.Employee)
+                    .WithMany(p => p.Notifications)
+                    .HasForeignKey(d => d.EmployeeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_employee");
+            });
+
             modelBuilder.Entity<Position>(entity =>
             {
                 entity.ToTable("position");
@@ -341,9 +353,7 @@ namespace HRM.Models
             {
                 entity.ToTable("salary");
 
-                entity.Property(e => e.SalaryId)
-                    .HasColumnType("text")
-                    .HasColumnName("salary_id");
+                entity.Property(e => e.SalaryId).HasColumnName("salary_id");
 
                 entity.Property(e => e.CreateAt)
                     .HasColumnType("timestamp with time zone")
@@ -367,9 +377,7 @@ namespace HRM.Models
 
                 entity.Property(e => e.EmployeeId).HasColumnName("employee_id");
 
-                entity.Property(e => e.SalaryId)
-                    .HasColumnType("text")
-                    .HasColumnName("salary_id");
+                entity.Property(e => e.SalaryId).HasColumnName("salary_id");
 
                 entity.Property(e => e.Content).HasColumnName("content");
 

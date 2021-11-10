@@ -13,6 +13,7 @@ using MudBlazor.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace HRM
@@ -39,6 +40,9 @@ namespace HRM
 
             services.AddMudServices();
             services.AddBlazoredSessionStorage();
+
+            services.AddScoped<HttpClient>();
+            services.AddScoped<AuthenticationService>();
 
             services.AddSingleton<AccountService>();
             services.AddSingleton<EmployeeService>();
@@ -72,6 +76,8 @@ namespace HRM
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

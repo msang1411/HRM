@@ -1,0 +1,10 @@
+﻿@inject NavigationManager Navigation
+@layout EmptyLayout
+
+@code {
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+            Navigation.NavigateTo("Identity/Account/Login?returnUrl=~/", true);
+    }
+}

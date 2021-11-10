@@ -8,12 +8,19 @@
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
         <li class="nav-item px-3">
-            <MudNavGroup Title="Quản lý" Style="color:white">
-                <MudNavGroup Title="Nhân viên" Style="color:white">
-                    <MudNavLink Href="/management/list-employees">Danh sách nhân viên</MudNavLink>
-                </MudNavGroup>
-                <MudNavLink Href="/management/configuration">Cấu hình</MudNavLink>
-            </MudNavGroup>
+            <AuthorizeView Roles="Admin">
+                <Authorized Context="admin">
+                    <MudNavGroup Title="Quản lý" Style="color:white">
+                        <MudNavGroup Title="Nhân viên" Style="color:white">
+                            <MudNavLink Href="/management/list-employees">Danh sách nhân viên</MudNavLink>
+                        </MudNavGroup>
+                        <MudNavLink Href="/management/configuration">Cấu hình</MudNavLink>
+                        <MudNavLink Href="/Identity/Account/Register">Tạo tài khoản</MudNavLink>
+                    </MudNavGroup>
+                </Authorized>
+            </AuthorizeView>
+            
+            
         </li>
     </ul>
 </div>
