@@ -1,0 +1,45 @@
+﻿@page "/test"
+@inject CalendarService CalendarService
+@inject CalendarDetailService CalendarDetailService
+
+<div class="container">
+    <div class="text-center my-4">
+        <MudText Typo="Typo.h3">Lịch làm việc tháng @_month năm @_year</MudText>
+    </div>
+    <MudGrid>
+        @for (int _day = 0; _day < _numberOfMonth; _day++)
+        {
+            int day = _day + 1;
+            <MudItem lg="2" md="3" xs="4">
+                <MudCard Class="p-2">
+                    <p>Ngày: @(day)</p>
+                    <p>Ca: 1, 2</p>
+                </MudCard>          
+            </MudItem>
+        }
+    </MudGrid>   
+</div>
+
+@code {
+    [Parameter] public bool IsEdit { set; get; } = false;
+    [Parameter] public int EmployeeId { set; get; }
+    private string calendarId = "";
+    private int _month;
+    private int _year;
+    private int _numberOfMonth;
+    private Calendar _calendar;
+
+    protected override void OnInitialized()
+    {
+        _month = DateTime.Now.Month;
+        _year = DateTime.Now.Year;
+        _numberOfMonth = DateTime.DaysInMonth(_year, _month);
+
+        calendarId = EmployeeId + "-" + _year + "-" + _month;
+
+        if (CalendarService.GetCalendar(calendarId) == null)
+        {
+
+        }
+    }
+}

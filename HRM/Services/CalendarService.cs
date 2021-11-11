@@ -15,5 +15,16 @@ namespace HRM.Services
         {
             _dbContextFactory = dbContextFactory;
         }
+
+        public Calendar GetCalendar(string calendarId)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            return context.Calendars.Where(n => n.CalendarId.Equals(calendarId)).FirstOrDefault();
+        }
+
+        public void AddCalendar(Calendar calendar)
+        {
+
+        }
     }
 }
