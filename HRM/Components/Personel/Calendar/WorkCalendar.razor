@@ -1,45 +1,115 @@
-﻿@page "/test"
-@inject CalendarService CalendarService
+﻿@inject CalendarService CalendarService
 @inject CalendarDetailService CalendarDetailService
 
-<div class="container">
-    <div class="text-center my-4">
-        <MudText Typo="Typo.h3">Lịch làm việc tháng @_month năm @_year</MudText>
+<div Class="mx-2">
+    <div class="text-center my-4 mx-2">
+        <MudText Typo="Typo.h5">Lịch làm việc tháng @_month năm @_year</MudText>
     </div>
-    <MudGrid>
-        @for (int _day = 0; _day < _numberOfMonth; _day++)
-        {
-            int day = _day + 1;
-            <MudItem lg="2" md="3" xs="4">
-                <MudCard Class="p-2">
-                    <p>Ngày: @(day)</p>
-                    <p>Ca: 1, 2</p>
-                </MudCard>          
-            </MudItem>
-        }
-    </MudGrid>   
+    @if (IsEdit == false)
+    {
+        <MudGrid>
+            @for (int day = 1; day <= _numberOfMonth; day++)
+            {
+                int _day = day;
+                <MudItem lg="2" md="3" xs="4">
+                    <MudCard Class="p-2">
+                        <p>Ngày: @_day</p>
+                        <p>
+                            Ca:
+                            @if (_listCalendarDetail.Where(x => x.Day == _day && x.IsWork == true).Count() == 0)
+                            {
+                                <span>nghỉ</span>
+                            }
+                            else
+                            {
+                                @foreach (var shift in _listCalendarDetail.Where(x => x.Day == _day && x.IsWork == true)
+                                                                           .OrderBy(x => x.Shift))
+                                {
+                                    <span>@shift.Shift &nbsp </span>
+                                }
+                            }
+                        </p>
+                    </MudCard>
+                </MudItem>
+            }
+        </MudGrid>
+    }
+    else
+    {
+        <MudForm Model="_listCalendarDetail">
+            <MudGrid>
+                @for (int day = 1; day <= _numberOfMonth; day++)
+                {
+                    int _day = day;
+                    <MudItem lg="2" md="3" xs="4">
+                        <MudCard Class="p-2">
+                            <p>Ngày: @_day</p>
+                            @foreach (var shift in _listCalendarDetail.Where(x => x.Day == _day).OrderBy(x => x.Shift))
+                            {
+                                <span>ca @shift.Shift</span>
+                                <MudRadioGroup @bind-SelectedOption="shift.IsWork">
+                                    <span>
+                                        <MudRadio T="bool?" Option="true" Color="Color.Primary" Dense="true">Làm</MudRadio>
+                                    </span>
+                                    <span>
+                                        <MudRadio T="bool?" Option="false" Color="Color.Primary" Dense="true">Nghỉ</MudRadio>
+                                    </span>
+                                </MudRadioGroup>
+                            }
+                        </MudCard>
+                    </MudItem>
+                }
+            </MudGrid>
+            <div class="text-center m-5">
+                <MudButton OnClick="OnUpdateCalendar"
+                           Variant="Variant.Filled"
+                           Color="Color.Success"
+                           Size="Size.Large">
+                    Cập nhật
+                </MudButton>
+            </div>
+        </MudForm>
+    }
 </div>
 
 @code {
     [Parameter] public bool IsEdit { set; get; } = false;
     [Parameter] public int EmployeeId { set; get; }
-    private string calendarId = "";
+    [Parameter] public EventCallback<bool> OnChangeIsEdit { set; get; }
+    private string _calendarId = "";
     private int _month;
     private int _year;
     private int _numberOfMonth;
     private Calendar _calendar;
+    private List<CalendarDetail> _listCalendarDetail;
 
     protected override void OnInitialized()
     {
+        OnChangeIsEdit.InvokeAsync(IsEdit);
+
         _month = DateTime.Now.Month;
         _year = DateTime.Now.Year;
+        _calendarId = EmployeeId + "-" + _year + "-" + _month;
         _numberOfMonth = DateTime.DaysInMonth(_year, _month);
 
-        calendarId = EmployeeId + "-" + _year + "-" + _month;
+        _calendar = CalendarService.GetCalendar(_calendarId);
 
-        if (CalendarService.GetCalendar(calendarId) == null)
+
+        if (_calendar == null)
         {
-
+            _calendar = new Calendar();
+            _calendar.CalendarId = _calendarId;
+            _calendar.Month = _month;
+            _calendar.Year = _year;
+            CalendarService.AddCalendar(_calendar);
         }
+        _listCalendarDetail = CalendarDetailService.GetCalendarDetails(_calendarId);
+    }
+
+    void OnUpdateCalendar()
+    {
+        CalendarDetailService.UpdateCalendar(_listCalendarDetail);
+        IsEdit = false;
+        OnChangeIsEdit.InvokeAsync(IsEdit);
     }
 }

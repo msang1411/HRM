@@ -19,7 +19,7 @@ namespace HRM.Services
         public List<CalendarDetail> GetCalendarDetails(string calendarId)
         {
             using var context = _dbContextFactory.CreateDbContext();
-            return context.CalendarDetails.Where(x => x.CalendarId.Equals(calendarId)).ToList();
+            return context.CalendarDetails.Where(x => x.CalendarId.Equals(calendarId)).OrderBy(x => x.Day).ToList();
         }
 
         public void AddCalendarDetailsFullMonth(string calendarId)
@@ -39,10 +39,19 @@ namespace HRM.Services
                     calendarDetail.Shift = shift;
                     calendarDetail.IsAttendance = false;
                     calendarDetail.IsLeavePermission = false;
+                    calendarDetail.IsWork = false;
 
                     context.CalendarDetails.Add(calendarDetail);
                 }
             }
+            context.SaveChanges();
+        }
+
+        public void UpdateCalendar(List<CalendarDetail> listCalendarDetails)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            context.CalendarDetails.UpdateRange(listCalendarDetails);
+            context.SaveChanges();
         }
     }
 }

@@ -14,7 +14,7 @@
 
 <MudGrid Justify="Justify.Center">
     <MudItem xs="3">
-        <MudPaper Class="text-center py-8">
+        <MudPaper Class="text-center py-2">
             <div class="my-3">
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfYi6KIX_Q1h-ZWkASf29RMe15B0LwUSuszhbrG_C8HQ8jC70XDYrrgonZ6fs1iM7bsuA&usqp=CAU"
                      style="width:50%; border-radius:50%" />
@@ -63,6 +63,11 @@
                         <p style="font-size:20px">Chức vụ: @_position.Name</p>
                         <p style="font-size:20px">ngày sinh: @GetDate(_employee.Birth.ToString())</p>
                         <p style="font-size:20px">Giới tính: @_employee.Gender</p>
+                        <AuthorizeView Roles="Admin">
+                            <Authorized Context="admin">
+                                <p style="font-size:20px">Lương cơ bản: @_employee.Wage VND</p>
+                            </Authorized>
+                        </AuthorizeView>
                     </MudItem>
                     <MudItem xs="6" Class="p-5">
                         <p style="font-size:20px">Phòng ban: @_department.Name</p>
@@ -152,10 +157,39 @@
                                 <MudSelectItem T="int?" Value="@position.PositionId">@position.Name</MudSelectItem>
                             }
                         </MudSelect>
+
+                        <MudTextField Variant="Variant.Outlined" Label="Lương cơ bản"
+                                      @bind-Value="_employeeEdit.Wage" Required="true"
+                                      RequiredError="Không được để trống lương cơ bản"
+                                      Class="my-2" />
                     </MudItem>
                 </MudGrid>
             }
         </MudPaper>
+    </MudItem>
+    <MudItem xs="12" Class="my-2">
+        <div class="container">
+            <div class="bg-white py-3">
+                <HRM.Components.Personel.Calendar.WorkCalendar EmployeeId="EmployeeId"
+                                                               IsEdit="_isEditWorkCalendar"
+                                                               OnChangeIsEdit="OnChangeEditWorkCalendar" />
+                @if (_isEditWorkCalendar == false)
+                {
+                    <AuthorizeView Roles="Admin">
+                        <Authorized Context="admin">
+                            <div class="text-center m-3">
+                                <MudButton OnClick="OnEditWorkCalendar"
+                                           Size="Size.Large"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Primary">
+                                    Sửa lịch làm việc
+                                </MudButton>
+                            </div>
+                        </Authorized>
+                    </AuthorizeView>
+                }
+            </div>
+        </div>
     </MudItem>
 </MudGrid>
 
@@ -168,6 +202,7 @@
     private bool _isEdit = false;
     private List<Models.Position> _listPositions;
     private List<Department> _listDepartments;
+    private bool _isEditWorkCalendar = false;
 
     protected override void OnInitialized()
     {
@@ -212,5 +247,13 @@
         string[] arrDateTime = DateStr.Split(" ");
         string[] arrDate = arrDateTime[0].Split("/");
         return DateTime.Now.Year - int.Parse(arrDate[2]);
+    }
+    void OnChangeEditWorkCalendar(bool isEdit)
+    {
+        _isEditWorkCalendar = isEdit;
+    }
+    void OnEditWorkCalendar()
+    {
+        _isEditWorkCalendar = true;
     }
 }

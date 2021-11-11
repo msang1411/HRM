@@ -24,7 +24,12 @@ namespace HRM.Services
 
         public void AddCalendar(Calendar calendar)
         {
-
+            using var context = _dbContextFactory.CreateDbContext();
+            context.Calendars.Add(calendar);
+            CalendarDetailService calendarDetailService = new CalendarDetailService(_dbContextFactory);
+            context.SaveChanges();
+            calendarDetailService.AddCalendarDetailsFullMonth(calendar.CalendarId);
+            
         }
     }
 }

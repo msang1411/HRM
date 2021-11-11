@@ -18,6 +18,7 @@ namespace HRM.Models
         public TimeSpan? ActualStart { get; set; }
         public TimeSpan? ActualEnd { get; set; }
         public bool? IsOvertime { get; set; }
+        public bool? IsWork { get; set; }
 
         public virtual Calendar Calendar { get; set; }
         public virtual Employee Employee { get; set; }
