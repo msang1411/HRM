@@ -1,0 +1,207 @@
+﻿@inject SalaryService SalaryService
+@inject SalaryDetailService SalaryDetailService
+@inject CalendarService CalendarService
+@inject CalendarDetailService CalendarDetailService
+@inject ISnackbar Snackbar
+
+<div class="bg-white p-4 m2">
+    <div class="text-center">
+        <MudText Typo="Typo.h5">Lương tháng @_month năm @_year</MudText>
+    </div>
+    @if (_isNull == true)
+    {
+        <div class="text-center">
+            <MudText Color="Color.Default">Không có dữ liệu về tháng @_month năm @_year</MudText>
+        </div>
+    }
+    else
+    {
+        <MudTable Items="_listSalaryDetails">
+            <HeaderContent>
+                <MudTh>Nội dung</MudTh>
+                <MudTh>Lương</MudTh>
+                <AuthorizeView Roles="Admin">
+                    <Authorized Context="admin">
+                        <MudTh>Sửa</MudTh>
+                    </Authorized>
+                </AuthorizeView>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Nội dung">@context.Content</MudTd>
+                <MudTd DataLabel="Lương">@context.Salary VND</MudTd>
+                <AuthorizeView Roles="Admin">
+                    <Authorized Context="admin">
+                        <MudTd>
+                            <MudIconButton OnClick="() => OnEditSalaryDetail(context)"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Success"
+                                           Icon="@Icons.Material.Filled.Edit" />
+                        </MudTd>
+                    </Authorized>
+                </AuthorizeView>
+            </RowTemplate>
+            <FooterContent>
+                <MudTd>Tổng lương tháng</MudTd>
+                <MudTd>@_totalSalary VND</MudTd>
+            </FooterContent>
+        </MudTable>
+
+        @if (_isEdit == true)
+        {
+            <MudForm Model="_salaryDetailEdit" class="my-5" @bind-IsValid="_editSuccess">
+                <MudText Color="Color.Default">chỉnh sửa</MudText>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem lg="6" xs="12">
+                        <MudTextField Variant="Variant.Outlined" Label="Nội dung"
+                                      @bind-Value="_salaryDetailEdit.Content" Required="true"
+                                      RequiredError="Không được để trống nội dung" />
+                    </MudItem>
+                    <MudItem lg="4" xs="8">
+                        <MudTextField @bind-Value="_salaryDetailEdit.Salary"
+                                      Variant="Variant.Outlined"
+                                      Label="Số tiền" Required="true"
+                                      Adornment="Adornment.Start"
+                                      AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                                      RequiredError="Không được để trống số tiền" />
+                    </MudItem>
+                    <MudItem lg="1" xs="2" Class="align-self-center">
+                        <MudIconButton OnClick="OnUpdateSalaryDetail"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Success"
+                                       Icon="@Icons.Material.Filled.Save"
+                                       Disabled="@(!_editSuccess)" />
+                    </MudItem>
+                    <MudItem lg="1" xs="2" Class="align-self-center">
+                        <MudIconButton OnClick="OnCancelUpdateSalaryDetail"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Error"
+                                       Icon="@Icons.Material.Filled.Cancel" />
+                    </MudItem>
+                </MudGrid>
+            </MudForm>
+        }
+        <AuthorizeView Roles="Admin">
+            <Authorized Context="admin">
+                <MudForm Model="_salaryDetail" class="my-5" @bind-IsValid="_addSuccess">
+                    <MudText Color="Color.Default">Thêm mục lương (số ca làm nghỉ: @_numberOfDaysOffWork)</MudText>
+                    <MudGrid Justify="Justify.Center">
+                        <MudItem lg="7" xs="12">
+                            <MudTextField Variant="Variant.Outlined" Label="Nội dung"
+                                          @bind-Value="_salaryDetail.Content" Required="true"
+                                          RequiredError="Không được để trống nội dung" />
+                        </MudItem>
+                        <MudItem lg="4" xs="10">
+                            <MudTextField @bind-Value="_salaryDetail.Salary"
+                                          Variant="Variant.Outlined"
+                                          Label="Số tiền" Required="true"
+                                          Adornment="Adornment.Start"
+                                          AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                                          RequiredError="Không được để trống số tiền" />
+                        </MudItem>
+                        <MudItem lg="1" xs="2" Class="align-self-center">
+                            <MudIconButton OnClick="OnAddSalaryDetail"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Success"
+                                           Icon="@Icons.Material.Filled.Add"
+                                           Disabled="@(!_addSuccess)" />
+                        </MudItem>
+                    </MudGrid>
+                </MudForm>
+            </Authorized>
+        </AuthorizeView>  
+    }
+</div>
+
+@code {
+    [Parameter] public int EmployeeId { set; get; }
+    private bool _isNull = false;
+    private string _salaryId = "";
+    private int _month;
+    private int _year;
+    private List<SalaryDetail> _listSalaryDetails;
+    private Salary _salary;
+    private SalaryDetail _salaryDetail = new SalaryDetail();
+    private int _numberOfDaysOffWork = 0;
+    private bool _addSuccess;
+
+    private bool _isEdit = false;
+    private SalaryDetail _salaryDetailEdit;
+    private bool _editSuccess;
+    private Decimal _totalSalary;
+
+    protected override void OnInitialized()
+    {
+        if (DateTime.Now.Month == 1)
+        {
+            _month = 12;
+            _year = DateTime.Now.Year - 1;
+        }
+        else
+        {
+            _month = DateTime.Now.Month - 1;
+            _year = DateTime.Now.Year;
+        }
+
+        _salaryId = EmployeeId + "-" + _year + "-" + _month;
+        Calendar calendar = CalendarService.GetCalendar(_salaryId);
+        if (calendar == null)
+        {
+            _isNull = true;
+        }
+        else
+        {
+            _salary = SalaryService.GetSalary(_salaryId);
+            if (_salary == null)
+            {
+                SalaryService.AddSalary(_salaryId);
+                _salary = SalaryService.GetSalary(_salaryId);
+                SalaryService.UpdateTotalSalary(_salaryId);
+            }
+            _listSalaryDetails = SalaryDetailService.GetSalaryDetails(_salaryId);
+
+            _numberOfDaysOffWork = CalendarDetailService.GetCalendarDetails(_salaryId)
+                                                        .Where(x => x.IsWork == false)
+                                                        .Count();
+            _totalSalary = (Decimal)SalaryService.GetSalary(_salaryId).TotalSalary;
+        }
+    }
+
+    void OnAddSalaryDetail()
+    {
+        _salaryDetail.SalaryId = _salaryId;
+        _salaryDetail.EmployeeId = EmployeeId;
+        _salaryDetail.CreateAt = DateTime.Now;
+        SalaryDetailService.AddSalaryDetails(_salaryDetail);
+        _listSalaryDetails.Add(_salaryDetail);
+        SalaryService.UpdateTotalSalary(_salaryId);
+        _salaryDetail = new SalaryDetail();
+    }
+
+    void OnEditSalaryDetail(SalaryDetail salaryDetail)
+    {
+        _salaryDetailEdit = new SalaryDetail();
+        _salaryDetailEdit.SalaryId = salaryDetail.SalaryId;
+        _salaryDetailEdit.EmployeeId = salaryDetail.EmployeeId;
+        _salaryDetailEdit.CreateAt = salaryDetail.CreateAt;
+        _salaryDetailEdit.Salary = salaryDetail.Salary;
+        _salaryDetailEdit.Content = salaryDetail.Content;
+
+        _isEdit = true;
+    }
+
+    void OnUpdateSalaryDetail()
+    {
+        SalaryDetailService.Update(_salaryDetailEdit);
+        Snackbar.Add($"sửa lương thành công");
+        _listSalaryDetails = SalaryDetailService.GetSalaryDetails(_salaryId);
+        SalaryService.UpdateTotalSalary(_salaryId);
+        _totalSalary += (Decimal)_salaryDetailEdit.Salary;
+        _salaryDetailEdit = new SalaryDetail();
+        _isEdit = false;
+    }
+    void OnCancelUpdateSalaryDetail()
+    {
+        _salaryDetailEdit = new SalaryDetail();
+        _isEdit = false;
+    }
+}

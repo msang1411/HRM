@@ -13,7 +13,7 @@
                 int _day = day;
                 <MudItem lg="2" md="3" xs="4">
                     <MudCard Class="p-2">
-                        <p>Ngày: @_day</p>
+                        <p>Ngày: @_day - @{_dateOfCalendar = new DateTime(_year, _month, _day); }@_dateOfCalendar.DayOfWeek.ToString()</p>
                         <p>
                             Ca:
                             @if (_listCalendarDetail.Where(x => x.Day == _day && x.IsWork == true).Count() == 0)
@@ -23,9 +23,9 @@
                             else
                             {
                                 @foreach (var shift in _listCalendarDetail.Where(x => x.Day == _day && x.IsWork == true)
-                                                                           .OrderBy(x => x.Shift))
+                                         .OrderBy(x => x.Shift))
                                 {
-                                    <span>@shift.Shift &nbsp </span>
+                                    <span>@shift.Shift &nbsp</span>
                                 }
                             }
                         </p>
@@ -43,7 +43,7 @@
                     int _day = day;
                     <MudItem lg="2" md="3" xs="4">
                         <MudCard Class="p-2">
-                            <p>Ngày: @_day</p>
+                            <p>Ngày: @_day - @{_dateOfCalendar = new DateTime(_year, _month, _day); }@_dateOfCalendar.DayOfWeek.ToString()</p>
                             @foreach (var shift in _listCalendarDetail.Where(x => x.Day == _day).OrderBy(x => x.Shift))
                             {
                                 <span>ca @shift.Shift</span>
@@ -62,10 +62,18 @@
             </MudGrid>
             <div class="text-center m-5">
                 <MudButton OnClick="OnUpdateCalendar"
+                           StartIcon="@Icons.Material.Filled.Update"
                            Variant="Variant.Filled"
                            Color="Color.Success"
                            Size="Size.Large">
                     Cập nhật
+                </MudButton>
+                <MudButton OnClick="OnCancelUpdateCalendar"
+                           StartIcon="@Icons.Material.Filled.Cancel"
+                           Variant="Variant.Filled"
+                           Color="Color.Error"
+                           Size="Size.Large">
+                    Hủy
                 </MudButton>
             </div>
         </MudForm>
@@ -82,6 +90,7 @@
     private int _numberOfMonth;
     private Calendar _calendar;
     private List<CalendarDetail> _listCalendarDetail;
+    private DateTime _dateOfCalendar;
 
     protected override void OnInitialized()
     {
@@ -93,7 +102,6 @@
         _numberOfMonth = DateTime.DaysInMonth(_year, _month);
 
         _calendar = CalendarService.GetCalendar(_calendarId);
-
 
         if (_calendar == null)
         {
@@ -109,6 +117,12 @@
     void OnUpdateCalendar()
     {
         CalendarDetailService.UpdateCalendar(_listCalendarDetail);
+        IsEdit = false;
+        OnChangeIsEdit.InvokeAsync(IsEdit);
+    }
+    void OnCancelUpdateCalendar()
+    {
+        _listCalendarDetail = CalendarDetailService.GetCalendarDetails(_calendarId);
         IsEdit = false;
         OnChangeIsEdit.InvokeAsync(IsEdit);
     }

@@ -9,7 +9,7 @@ namespace HRM.Models
     {
         public int EmployeeId { get; set; }
         public string SalaryId { get; set; }
-        public DateTime? CreateAt { get; set; }
+        public DateTime CreateAt { get; set; }
         public decimal? Salary { get; set; }
         public string Content { get; set; }
 

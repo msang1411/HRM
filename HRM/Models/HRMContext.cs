@@ -473,8 +473,8 @@ namespace HRM.Models
 
             modelBuilder.Entity<SalaryDetail>(entity =>
             {
-                entity.HasKey(e => new { e.EmployeeId, e.SalaryId })
-                    .HasName("pk_salary_detail");
+                entity.HasKey(e => new { e.EmployeeId, e.SalaryId, e.CreateAt })
+                    .HasName("salary_detail_pkey");
 
                 entity.ToTable("salary_detail");
 
@@ -482,9 +482,9 @@ namespace HRM.Models
 
                 entity.Property(e => e.SalaryId).HasColumnName("salary_id");
 
-                entity.Property(e => e.Content).HasColumnName("content");
-
                 entity.Property(e => e.CreateAt).HasColumnName("create_at");
+
+                entity.Property(e => e.Content).HasColumnName("content");
 
                 entity.Property(e => e.Salary)
                     .HasColumnType("money")
@@ -500,7 +500,7 @@ namespace HRM.Models
                     .WithMany(p => p.SalaryDetails)
                     .HasForeignKey(d => d.SalaryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_salary_id");
+                    .HasConstraintName("fk_salary");
             });
 
             OnModelCreatingPartial(modelBuilder);

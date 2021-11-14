@@ -15,5 +15,25 @@ namespace HRM.Services
         {
             _dbContextFactory = dbContextFactory;
         }
+
+        public List<SalaryDetail> GetSalaryDetails(string salaryId)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            return context.SalaryDetails.Where(x => x.SalaryId.Equals(salaryId)).ToList();
+        }
+
+        public void AddSalaryDetails(SalaryDetail salaryDetail)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            context.SalaryDetails.Add(salaryDetail);
+            context.SaveChanges();
+        }
+
+        public void Update(SalaryDetail salaryDetail)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            context.SalaryDetails.Update(salaryDetail);
+            context.SaveChanges();
+        }
     }
 }

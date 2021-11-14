@@ -10,6 +10,7 @@
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject AuthenticationService AuthenticationService
 @attribute [Authorize(Roles = "Admin,User")]
 
 <MudGrid Justify="Justify.Center">
@@ -192,10 +193,19 @@
         </div>
     </MudItem>
 </MudGrid>
+@if (_isAdmin == true || _isCurrentEmployee == true)
+{ 
+    <div class="container">
+        <HRM.Components.Salary.PersonalSalary EmployeeId="@EmployeeId" />
+    </div>
+}
+
 
 @code {
     [Parameter] public int EmployeeId { get; set; }
     private Employee _employee;
+    private bool _isAdmin = false;
+    private bool _isCurrentEmployee = false;
     private Employee _employeeEdit;
     private Models.Position _position;
     private Department _department;
@@ -204,9 +214,18 @@
     private List<Department> _listDepartments;
     private bool _isEditWorkCalendar = false;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.IsInRole("Admin"))
+        {
+            _isAdmin = true;
+        }
+        if (EmployeeId == AuthenticationService.GetCurrentAccount().EmployeeId)
+        {
+            _isCurrentEmployee = true;
+        }
 
         _employee = EmployeeService.GetEmployee(EmployeeId);
         _position = PositionService.GetPosition((int)_employee.PositionId);
