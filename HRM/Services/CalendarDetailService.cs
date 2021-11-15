@@ -37,7 +37,6 @@ namespace HRM.Services
                     calendarDetail.EmployeeId = employeeId;
                     calendarDetail.Day = day;
                     calendarDetail.Shift = shift;
-                    calendarDetail.IsAttendance = false;
                     calendarDetail.IsLeavePermission = false;
                     calendarDetail.IsWork = false;
 
@@ -52,6 +51,104 @@ namespace HRM.Services
             using var context = _dbContextFactory.CreateDbContext();
             context.CalendarDetails.UpdateRange(listCalendarDetails);
             context.SaveChanges();
+        }
+
+        public void UpdateCalendarDetail(CalendarDetail calendarDetail)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            context.CalendarDetails.Update(calendarDetail);
+            context.SaveChanges();
+        }
+
+        public CalendarDetail GetCalendarOnDay(string calendarId, int day, int shift)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            return context.CalendarDetails.Where(x => x.CalendarId.Equals(calendarId) && x.Day == day && x.Shift == shift)
+                                          .FirstOrDefault();
+        }
+
+        public void OnShift(CalendarDetail calendarDetail)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            calendarDetail.ActualStart = DateTime.Now.TimeOfDay;
+            calendarDetail.IsAttendance = true;
+            context.CalendarDetails.Update(calendarDetail);
+            context.SaveChanges();
+        }
+
+        public void BrowseShift(string calendarId)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            int day = DateTime.Now.Day;
+
+            List<CalendarDetail> calendarDetailsIsWork = context.CalendarDetails.Where(x => x.CalendarId.Equals(calendarId) &&
+                                                                                            x.Day < day &&
+                                                                                            x.IsWork == true &&
+                                                                                            x.IsAttendance == null)
+                                                                                .ToList();
+            foreach(CalendarDetail calendarDetail in calendarDetailsIsWork)
+            {
+                calendarDetail.IsAttendance = false;
+                context.CalendarDetails.Update(calendarDetail);
+            }
+            context.SaveChanges();
+            if (DateTime.Now.TimeOfDay >= new TimeSpan(14, 0, 0) && DateTime.Now.TimeOfDay <= new TimeSpan(18, 0, 0))
+            {
+                if (GetCalendarOnDay(calendarId, day, 1).IsAttendance == null)
+                {
+                    CalendarDetail calendar = new CalendarDetail();
+                    calendar = GetCalendarOnDay(calendarId, day, 1);
+                    calendar.IsAttendance = false;
+                    context.CalendarDetails.Update(calendar);
+                    context.SaveChanges();
+                }
+            }
+            else if (DateTime.Now.TimeOfDay >= new TimeSpan(19, 0, 0) && DateTime.Now.TimeOfDay <= new TimeSpan(21, 0, 0))
+            {
+                if (GetCalendarOnDay(calendarId, day, 1).IsAttendance == null)
+                {
+                    CalendarDetail calendar = new CalendarDetail();
+                    calendar = GetCalendarOnDay(calendarId, day, 1);
+                    calendar.IsAttendance = false;
+                    context.CalendarDetails.Update(calendar);
+                    context.SaveChanges();
+                }
+                if (GetCalendarOnDay(calendarId, day, 2).IsAttendance == null)
+                {
+                    CalendarDetail calendar = new CalendarDetail();
+                    calendar = GetCalendarOnDay(calendarId, day, 2);
+                    calendar.IsAttendance = false;
+                    context.CalendarDetails.Update(calendar);
+                    context.SaveChanges();
+                }
+            }
+            else if (DateTime.Now.TimeOfDay >= new TimeSpan(21, 0, 0) && DateTime.Now.TimeOfDay <= new TimeSpan(23, 55, 55))
+            {
+                if (GetCalendarOnDay(calendarId, day, 1).IsAttendance == null)
+                {
+                    CalendarDetail calendar = new CalendarDetail();
+                    calendar = GetCalendarOnDay(calendarId, day, 1);
+                    calendar.IsAttendance = false;
+                    context.CalendarDetails.Update(calendar);
+                    context.SaveChanges();
+                }
+                if (GetCalendarOnDay(calendarId, day, 2).IsAttendance == null)
+                {
+                    CalendarDetail calendar = new CalendarDetail();
+                    calendar = GetCalendarOnDay(calendarId, day, 2);
+                    calendar.IsAttendance = false;
+                    context.CalendarDetails.Update(calendar);
+                    context.SaveChanges();
+                }
+                if (GetCalendarOnDay(calendarId, day, 3).IsAttendance == null)
+                {
+                    CalendarDetail calendar = new CalendarDetail();
+                    calendar = GetCalendarOnDay(calendarId, day, 3);
+                    calendar.IsAttendance = false;
+                    context.CalendarDetails.Update(calendar);
+                    context.SaveChanges();
+                }
+            }
         }
     }
 }

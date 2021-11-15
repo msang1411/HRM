@@ -23,9 +23,24 @@
                             else
                             {
                                 @foreach (var shift in _listCalendarDetail.Where(x => x.Day == _day && x.IsWork == true)
-                                         .OrderBy(x => x.Shift))
+                                      .OrderBy(x => x.Shift))
                                 {
-                                    <span>@shift.Shift &nbsp</span>
+                                    if (shift.IsLeavePermission == false)
+                                    {
+                                        if (shift.IsAttendance == null)
+                                        {
+                                            <span style="color:black">@shift.Shift &nbsp</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:@((bool)shift.IsAttendance ? "chartreuse" : "red")">@shift.Shift &nbsp</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span style="color:fuchsia">@shift.Shift &nbsp</span>
+                                    }
+
                                 }
                             }
                         </p>
@@ -111,6 +126,7 @@
             _calendar.Year = _year;
             CalendarService.AddCalendar(_calendar);
         }
+        CalendarDetailService.BrowseShift(_calendarId);
         _listCalendarDetail = CalendarDetailService.GetCalendarDetails(_calendarId);
     }
 

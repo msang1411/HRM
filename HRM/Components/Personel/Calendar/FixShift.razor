@@ -1,0 +1,140 @@
+﻿@inject CalendarService CalendarService
+@inject CalendarDetailService CalendarDetailService
+@inject ISnackbar Snackbar
+
+<div class="m-4">
+    <div class="text-center">
+        <MudText Typo="Typo.h6">Sửa tan ca tháng @DateTime.Now.Month năm @DateTime.Now.Year</MudText>
+    </div>
+    @if (DateTime.Now.Day == 1)
+    {
+        <p>Ngày 1 không sửa được</p>
+    }
+    else
+    {
+        <MudGrid Class="mt-4">
+            <MudItem xs="12" md="6" lg="6" Class="border">
+                @if (_isHadCalendar == true)
+                {
+                    <p>Tìm ca cần sửa</p>
+                    <MudSelect @bind-Value="_selectDay"
+                               Label="Ngày"
+                               Variant="Variant.Outlined">
+                        @for (int day = 1; day < DateTime.Now.Day; day++)
+                                {
+                                    int daySelect = day;
+                            <MudSelectItem Value="daySelect">@daySelect</MudSelectItem>
+                                }
+                    </MudSelect>
+                    <MudSelect @bind-Value="_selectShift"
+                               Label="Ca"
+                               Variant="Variant.Outlined">
+                        <MudSelectItem Value="1">ca 1</MudSelectItem>
+                        <MudSelectItem Value="2">ca 2</MudSelectItem>
+                        <MudSelectItem Value="3">ca 3</MudSelectItem>
+                    </MudSelect>
+                    <div class="text-center mt-3">
+                        <MudButton OnClick="OnSearch"
+                                   Color="Color.Primary">
+                            Tìm
+                        </MudButton>
+                    </div>
+
+                }
+                else
+                {
+                    <p>Chưa có lịch làm việc</p>
+                }
+            </MudItem>
+            <MudItem xs="12" md="6" lg="6" Class="border">
+                @if (_isSearch == true)
+                {
+                    @if (_isWorkShift == true)
+                    {
+                        <p>ca @_calendarDetail.Shift ngày @_calendarDetail.Day</p>
+                        <div>
+                            <MudRadioGroup @bind-SelectedOption="_isAttendance" Required="true">
+                                <MudRadio Option="true">Tham dự</MudRadio>
+                                <MudRadio Option="false">Không tham dự</MudRadio>
+                            </MudRadioGroup>
+                        </div>
+                        <div>
+                            <MudRadioGroup @bind-SelectedOption="_isLeavePermission" Required="true">
+                                <MudRadio Option="true">Nghi có phép</MudRadio>
+                                <MudRadio Option="false">Nghỉ không phép</MudRadio>
+                            </MudRadioGroup>
+                        </div>
+                        <div class="text-center mt-3">
+                            <MudButton OnClick="OnSaveShift"
+                                       Color="Color.Primary">
+                                Sửa
+                            </MudButton>
+                            <MudButton OnClick="OnCancel"
+                                       Color="Color.Error">
+                                Hủy
+                            </MudButton>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>ca này không làm</p>
+                    }
+                }
+            </MudItem>
+        </MudGrid>
+    }
+
+</div>
+
+@code {
+    [Parameter] public int EmployeeId { get; set; }
+    [Parameter] public EventCallback<bool> OnChange { get; set; }
+    private string _calendarId = "";
+    private int _selectDay = 1;
+    private int _selectShift = 1;
+    private bool _isSearch = false;
+    private bool _isWorkShift = false;
+    private bool _isHadCalendar = true;
+    private CalendarDetail _calendarDetail;
+    private bool _isAttendance;
+    private bool _isLeavePermission;
+
+    protected override void OnInitialized()
+    {
+        _calendarId = EmployeeId + "-" + DateTime.Now.Year + "-" + DateTime.Now.Month;
+        Calendar calendar = CalendarService.GetCalendar(_calendarId);
+        if (calendar == null)
+        {
+            _isHadCalendar = false;
+        }
+    }
+
+    void OnSearch()
+    {
+        _calendarDetail = CalendarDetailService.GetCalendarOnDay(_calendarId, _selectDay, _selectShift);
+        _isSearch = true;
+        if ((bool)_calendarDetail.IsWork == true)
+        {
+            _isAttendance = (bool)_calendarDetail.IsAttendance;
+            _isLeavePermission = (bool)_calendarDetail.IsLeavePermission;
+            _isWorkShift = true;
+        }
+    }
+
+    void OnSaveShift()
+    {
+        _calendarDetail.IsAttendance = _isAttendance;
+        _calendarDetail.IsLeavePermission = _isLeavePermission;
+        CalendarDetailService.UpdateCalendarDetail(_calendarDetail);
+        _isSearch = false;
+        _isWorkShift = false;
+        Snackbar.Add($"Sửa thành công, F5 để check");
+        OnChange.InvokeAsync(false);
+    }
+
+    void OnCancel()
+    {
+        _isSearch = false;
+        _isWorkShift = false;
+    }
+}

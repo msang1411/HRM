@@ -185,7 +185,19 @@
                                            Color="Color.Primary">
                                     Sửa lịch làm việc
                                 </MudButton>
+                                <MudButton OnClick="OnChangeShift"
+                                           Size="Size.Large"
+                                           Variant="Variant.Filled"
+                                           Color="@(_isEditShift ? Color.Error: Color.Primary)">
+                                    Sửa tan ca
+                                </MudButton>
                             </div>
+                            @if (_isEditShift == true)
+                            {
+                                <HRM.Components.Personel.Calendar.FixShift EmployeeId="EmployeeId"
+                                                                           OnChange="OnIsChangeShift" />
+                            }
+                            
                         </Authorized>
                     </AuthorizeView>
                 }
@@ -213,6 +225,7 @@
     private List<Models.Position> _listPositions;
     private List<Department> _listDepartments;
     private bool _isEditWorkCalendar = false;
+    private bool _isEditShift = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -267,12 +280,24 @@
         string[] arrDate = arrDateTime[0].Split("/");
         return DateTime.Now.Year - int.Parse(arrDate[2]);
     }
+
     void OnChangeEditWorkCalendar(bool isEdit)
     {
         _isEditWorkCalendar = isEdit;
     }
+
     void OnEditWorkCalendar()
     {
         _isEditWorkCalendar = true;
+    }
+
+    void OnChangeShift()
+    {
+        _isEditShift = !_isEditShift;
+    }
+
+    void OnIsChangeShift(bool isChange)
+    {
+        _isEditShift = isChange;
     }
 }

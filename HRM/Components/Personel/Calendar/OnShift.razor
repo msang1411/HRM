@@ -1,0 +1,116 @@
+﻿@page "/employee/on-shift"
+
+@inject AuthenticationService AuthenticationService
+@inject CalendarService CalendarService
+@inject CalendarDetailService CalendarDetailService
+@inject ISnackbar Snackbar
+
+<div class="container">
+    <div style="width:100%; height:70vh" class="bg-white text-center">
+        @if (_isHaveCalendar == true)
+        {
+            if (_isBreak == true)
+            {
+                <MudText Typo="Typo.h4">Không trong giờ làm</MudText>
+            }
+            else
+            {
+                if (_calendarDetail.IsWork == false)
+                {
+                    <MudText Typo="Typo.h4">Hôm nay bạn không có ca</MudText>
+                }
+                else
+                {
+                    if (_isOnShift == false)
+                    {
+                        <MudText Typo="Typo.h5">Chưa vào ca</MudText>
+                        <MudButton OnClick="HandleOnShift"
+                                   Size="Size.Large"
+                                   Color="Color.Success">
+                            Vào ca
+                        </MudButton>
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.h5">Đã vào ca</MudText>
+                        <MudButton Size="Size.Large"
+                                   Color="Color.Success"
+                                   Disabled="true">
+                            Vào ca
+                        </MudButton>
+                    }
+                }
+            }
+
+        }
+        else
+        {
+            <MudText Typo="Typo.h4">Bạn chưa đăng ký lịch làm. Vui lòng vào profile để đăng ký</MudText>
+        }
+    </div>
+</div>
+
+@code {
+    private int _currentEmployee;
+    private int _month;
+    private int _year;
+    private string _calendarId = "";
+    private bool _isHaveCalendar = true;
+
+    private Calendar _calendar;
+    private CalendarDetail _calendarDetail;
+    private bool _isOnShift = false;
+    private int _shift = 0;
+    private bool _isBreak = false;
+
+    protected override void OnInitialized()
+    {
+        _currentEmployee = (int)AuthenticationService.GetCurrentAccount().EmployeeId;
+        _month = DateTime.Now.Month;
+        _year = DateTime.Now.Year;
+        _calendarId = _currentEmployee + "-" + _year + "-" + _month;
+
+        _calendar = CalendarService.GetCalendar(_calendarId);
+        if (_calendar == null)
+        {
+            _isHaveCalendar = false;
+        }
+        else
+        {
+            if (DateTime.Now.TimeOfDay >= new TimeSpan(8, 0, 0) && DateTime.Now.TimeOfDay <= new TimeSpan(12, 0, 0))
+            {
+                _shift = 1;
+            }
+            else if (DateTime.Now.TimeOfDay >= new TimeSpan(14, 0, 0) && DateTime.Now.TimeOfDay <= new TimeSpan(18, 0, 0))
+            {
+                _shift = 2;
+            }
+            else if (DateTime.Now.TimeOfDay >= new TimeSpan(19, 0, 0) && DateTime.Now.TimeOfDay <= new TimeSpan(21, 0, 0))
+            {
+                _shift = 3;
+            }
+            _calendarDetail = CalendarDetailService.GetCalendarOnDay(_calendarId, DateTime.Now.Day, _shift);
+            if (_calendarDetail == null)
+            {
+                _isBreak = true;
+            }
+            else
+            {
+                if (_calendarDetail.IsWork == true)
+                {
+                    if (_calendarDetail.IsAttendance == true)
+                    {
+                        _isOnShift = true;
+                    }
+                }
+            }
+        }
+    }
+
+    void HandleOnShift()
+    {
+        CalendarDetailService.OnShift(_calendarDetail);
+        Snackbar.Add($"Vào ca");
+        _isOnShift = true;
+    }
+}
