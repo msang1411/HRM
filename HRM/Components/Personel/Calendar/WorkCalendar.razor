@@ -4,6 +4,14 @@
 <div Class="mx-2">
     <div class="text-center my-4 mx-2">
         <MudText Typo="Typo.h5">Lịch làm việc tháng @_month năm @_year</MudText>
+        <div class="align-self-center">
+            <div style="background-color:chartreuse; width:15px; height:15px; display:inline-block" class="border"></div>
+            <span style="width:15px">: có mặt &nbsp</span>
+            <div style="background-color:red; width:15px; height:15px; display:inline-block" class="border"></div>
+            <span style="width:15px">: nghỉ không phép &nbsp</span>
+            <div style="background-color:fuchsia; width:15px; height:15px; display:inline-block" class="border"></div>
+            <span style="width:15px">: nghỉ có phép &nbsp</span>
+        </div>
     </div>
     @if (IsEdit == false)
     {

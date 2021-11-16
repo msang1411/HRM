@@ -20,7 +20,7 @@
                     <MudSelect @bind-Value="_selectDay"
                                Label="Ngày"
                                Variant="Variant.Outlined">
-                        @for (int day = 1; day < DateTime.Now.Day; day++)
+                        @for (int day = 1; day <= DateTime.Now.Day; day++)
                                 {
                                     int daySelect = day;
                             <MudSelectItem Value="daySelect">@daySelect</MudSelectItem>
@@ -51,29 +51,36 @@
                 {
                     @if (_isWorkShift == true)
                     {
-                        <p>ca @_calendarDetail.Shift ngày @_calendarDetail.Day</p>
-                        <div>
-                            <MudRadioGroup @bind-SelectedOption="_isAttendance" Required="true">
-                                <MudRadio Option="true">Tham dự</MudRadio>
-                                <MudRadio Option="false">Không tham dự</MudRadio>
-                            </MudRadioGroup>
-                        </div>
-                        <div>
-                            <MudRadioGroup @bind-SelectedOption="_isLeavePermission" Required="true">
-                                <MudRadio Option="true">Nghi có phép</MudRadio>
-                                <MudRadio Option="false">Nghỉ không phép</MudRadio>
-                            </MudRadioGroup>
-                        </div>
-                        <div class="text-center mt-3">
-                            <MudButton OnClick="OnSaveShift"
-                                       Color="Color.Primary">
-                                Sửa
-                            </MudButton>
-                            <MudButton OnClick="OnCancel"
-                                       Color="Color.Error">
-                                Hủy
-                            </MudButton>
-                        </div>
+                        if (@_calendarDetail.IsAttendance == null)
+                        {
+                            <p>chưa qua ca này</p>
+                        }
+                        else
+                        {
+                            <p>ca @_calendarDetail.Shift ngày @_calendarDetail.Day</p>
+                            <div>
+                                <MudRadioGroup @bind-SelectedOption="_isAttendance" Required="true">
+                                    <MudRadio Option="true">Tham dự</MudRadio>
+                                    <MudRadio Option="false">Không tham dự</MudRadio>
+                                </MudRadioGroup>
+                            </div>
+                            <div>
+                                <MudRadioGroup @bind-SelectedOption="_isLeavePermission" Required="true">
+                                    <MudRadio Option="true">Nghi có phép</MudRadio>
+                                    <MudRadio Option="false">Nghỉ không phép</MudRadio>
+                                </MudRadioGroup>
+                            </div>
+                            <div class="text-center mt-3">
+                                <MudButton OnClick="OnSaveShift"
+                                           Color="Color.Primary">
+                                    Sửa
+                                </MudButton>
+                                <MudButton OnClick="OnCancel"
+                                           Color="Color.Error">
+                                    Hủy
+                                </MudButton>
+                            </div>
+                        }
                     }
                     else
                     {
@@ -115,9 +122,12 @@
         _isSearch = true;
         if ((bool)_calendarDetail.IsWork == true)
         {
-            _isAttendance = (bool)_calendarDetail.IsAttendance;
-            _isLeavePermission = (bool)_calendarDetail.IsLeavePermission;
             _isWorkShift = true;
+            if (_calendarDetail.IsAttendance != null)
+            {
+                _isAttendance = (bool)_calendarDetail.IsAttendance;
+                _isLeavePermission = (bool)_calendarDetail.IsLeavePermission;
+            }
         }
     }
 

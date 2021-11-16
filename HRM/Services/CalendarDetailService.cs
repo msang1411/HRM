@@ -105,48 +105,30 @@ namespace HRM.Services
             }
             else if (DateTime.Now.TimeOfDay >= new TimeSpan(19, 0, 0) && DateTime.Now.TimeOfDay <= new TimeSpan(21, 0, 0))
             {
-                if (GetCalendarOnDay(calendarId, day, 1).IsAttendance == null)
+                for (int shift = 1; shift <= 2; shift++)
                 {
-                    CalendarDetail calendar = new CalendarDetail();
-                    calendar = GetCalendarOnDay(calendarId, day, 1);
-                    calendar.IsAttendance = false;
-                    context.CalendarDetails.Update(calendar);
-                    context.SaveChanges();
-                }
-                if (GetCalendarOnDay(calendarId, day, 2).IsAttendance == null)
-                {
-                    CalendarDetail calendar = new CalendarDetail();
-                    calendar = GetCalendarOnDay(calendarId, day, 2);
-                    calendar.IsAttendance = false;
-                    context.CalendarDetails.Update(calendar);
-                    context.SaveChanges();
+                    if (GetCalendarOnDay(calendarId, day, shift).IsAttendance == null)
+                    {
+                        CalendarDetail calendar = new CalendarDetail();
+                        calendar = GetCalendarOnDay(calendarId, day, shift);
+                        calendar.IsAttendance = false;
+                        context.CalendarDetails.Update(calendar);
+                        context.SaveChanges();
+                    }
                 }
             }
             else if (DateTime.Now.TimeOfDay >= new TimeSpan(21, 0, 0) && DateTime.Now.TimeOfDay <= new TimeSpan(23, 55, 55))
             {
-                if (GetCalendarOnDay(calendarId, day, 1).IsAttendance == null)
+                for (int shift = 1; shift <= 3; shift++)
                 {
-                    CalendarDetail calendar = new CalendarDetail();
-                    calendar = GetCalendarOnDay(calendarId, day, 1);
-                    calendar.IsAttendance = false;
-                    context.CalendarDetails.Update(calendar);
-                    context.SaveChanges();
-                }
-                if (GetCalendarOnDay(calendarId, day, 2).IsAttendance == null)
-                {
-                    CalendarDetail calendar = new CalendarDetail();
-                    calendar = GetCalendarOnDay(calendarId, day, 2);
-                    calendar.IsAttendance = false;
-                    context.CalendarDetails.Update(calendar);
-                    context.SaveChanges();
-                }
-                if (GetCalendarOnDay(calendarId, day, 3).IsAttendance == null)
-                {
-                    CalendarDetail calendar = new CalendarDetail();
-                    calendar = GetCalendarOnDay(calendarId, day, 3);
-                    calendar.IsAttendance = false;
-                    context.CalendarDetails.Update(calendar);
-                    context.SaveChanges();
+                    if (GetCalendarOnDay(calendarId, day, shift).IsAttendance == null)
+                    {
+                        CalendarDetail calendar = new CalendarDetail();
+                        calendar = GetCalendarOnDay(calendarId, day, shift);
+                        calendar.IsAttendance = false;
+                        context.CalendarDetails.Update(calendar);
+                        context.SaveChanges();
+                    }
                 }
             }
         }

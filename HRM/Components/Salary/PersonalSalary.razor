@@ -83,7 +83,8 @@
         <AuthorizeView Roles="Admin">
             <Authorized Context="admin">
                 <MudForm Model="_salaryDetail" class="my-5" @bind-IsValid="_addSuccess">
-                    <MudText Color="Color.Default">Thêm mục lương (số ca làm nghỉ: @_numberOfDaysOffWork)</MudText>
+                    <MudText Color="Color.Default">Thêm mục lương (số ca làm nghỉ: @_numberOfDaysOffWork, trong đó 
+                                                                    có @_numberDayLeavePermission phép)</MudText>
                     <MudGrid Justify="Justify.Center">
                         <MudItem lg="7" xs="12">
                             <MudTextField Variant="Variant.Outlined" Label="Nội dung"
@@ -128,6 +129,7 @@
     private SalaryDetail _salaryDetailEdit;
     private bool _editSuccess;
     private Decimal _totalSalary;
+    private int _numberDayLeavePermission;
 
     protected override void OnInitialized()
     {
@@ -162,6 +164,9 @@
             _numberOfDaysOffWork = CalendarDetailService.GetCalendarDetails(_salaryId)
                                                         .Where(x => x.IsWork == false)
                                                         .Count();
+            _numberDayLeavePermission = CalendarDetailService.GetCalendarDetails(_salaryId)
+                                                    .Where(x => x.IsLeavePermission == true)
+                                                    .Count();
             _totalSalary = (Decimal)SalaryService.GetSalary(_salaryId).TotalSalary;
         }
     }
