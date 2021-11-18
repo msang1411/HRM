@@ -9,7 +9,7 @@ namespace HRM.Models
     {
         public int RecruitmentId { get; set; }
         public string SrcFile { get; set; }
-        public DateTime? SubmissionAt { get; set; }
+        public DateTime SubmissionAt { get; set; }
         public bool? IsApproved { get; set; }
         public DateTime? ApprovedDate { get; set; }
         public int? Approver { get; set; }

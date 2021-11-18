@@ -14,7 +14,7 @@ namespace HRM.Models
 
         public string SalaryId { get; set; }
         public decimal? TotalSalary { get; set; }
-        public DateTime? CreateAt { get; set; }
+        public DateTime CreateAt { get; set; }
         public bool? IsPaid { get; set; }
         public DateTime? PaidDate { get; set; }
 

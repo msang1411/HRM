@@ -8,6 +8,7 @@ namespace HRM.Models
 {
     public partial class HRMContext : DbContext
     {
+
         public HRMContext(DbContextOptions<HRMContext> options)
             : base(options)
         {
