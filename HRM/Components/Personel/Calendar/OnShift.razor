@@ -23,12 +23,19 @@
                 {
                     if (_isOnShift == false)
                     {
-                        <MudText Typo="Typo.h5">Chưa vào ca</MudText>
-                        <MudButton OnClick="HandleOnShift"
-                                   Size="Size.Large"
-                                   Color="Color.Success">
-                            Vào ca
-                        </MudButton>
+                        if (_isLeaveApplication == true)
+                        {
+                            <MudText Typo="Typo.h5">Nghỉ phép</MudText>
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.h5">Chưa vào ca</MudText>
+                            <MudButton OnClick="HandleOnShift"
+                                       Size="Size.Large"
+                                       Color="Color.Success">
+                                Vào ca
+                            </MudButton>
+                        }
                     }
                     else
                     {
@@ -55,6 +62,7 @@
     private int _year;
     private string _calendarId = "";
     private bool _isHaveCalendar = true;
+    private bool _isLeaveApplication = false;
 
     private Calendar _calendar;
     private CalendarDetail _calendarDetail;
@@ -100,6 +108,11 @@
                     if (_calendarDetail.IsAttendance == true)
                     {
                         _isOnShift = true;
+
+                    }
+                    if (_calendarDetail.IsLeavePermission == true)
+                    {
+                        _isLeaveApplication = true;
                     }
                 }
             }

@@ -10,19 +10,22 @@
         <li class="nav-item px-3">
             <MudNavLink Href="/employee/list-employees">Danh sách nhân viên</MudNavLink>
             <MudNavLink Href="/employee/on-shift">Vào ca</MudNavLink>
+            <MudNavLink Href="/leave-application">Nộp đơn xin nghỉ phép</MudNavLink>
             <AuthorizeView Roles="Admin">
                 <Authorized Context="admin">
                     <MudNavGroup Title="Quản lý" Style="color:white">
                         <MudNavGroup Title="Nhân viên" Style="color:white">
                             <MudNavLink Href="/management/employees">Nhân sự</MudNavLink>
+                            <MudNavLink Href="/management/leave-application">Duyệt đơn nghỉ phép</MudNavLink>
+                        </MudNavGroup>
+                        <MudNavGroup Title="Thống kê" Style="color:white">
+                            
                         </MudNavGroup>
                         <MudNavLink Href="/management/configuration">Cấu hình</MudNavLink>
                         <MudNavLink Href="/Identity/Account/Register">Tạo tài khoản</MudNavLink>
                     </MudNavGroup>
                 </Authorized>
             </AuthorizeView>
-
-
         </li>
     </ul>
 </div>

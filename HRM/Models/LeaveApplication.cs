@@ -13,6 +13,8 @@ namespace HRM.Models
         public bool? IsApproved { get; set; }
         public DateTime? ApprovedAt { get; set; }
         public int? Approver { get; set; }
+        public int? Shift { get; set; }
+        public DateTime? Day { get; set; }
 
         public virtual Employee ApproverNavigation { get; set; }
         public virtual Employee Employee { get; set; }

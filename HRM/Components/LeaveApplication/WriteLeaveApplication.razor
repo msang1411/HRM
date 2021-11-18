@@ -1,12 +1,123 @@
 ﻿@page "/leave-application"
 
-<div class="container">
-    <div>
-        <MudText Typo="Typo.h2">Viết đơn xin nghỉ phép</MudText>
-    </div>
+@inject CalendarService CalendarService
+@inject CalendarDetailService CalendarDetailService
+@inject LeaveApplicationService LeaveApplicationService
+@inject AuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
 
+<div class="container">
+    <div class="bg-white p-4">
+        @if (_isHaveCalendar == false)
+        {
+            <div class="text-center">
+                <MudText Typo="Typo.h2"><strong>Chưa có lịch làm. Vào trang cá nhân để cập nhật lịch tháng này.</strong></MudText>
+            </div>
+        }
+        else
+        {
+            <div class="text-center">
+                <MudText Typo="Typo.h2"><strong>Đơn xin nghỉ phép</strong></MudText>
+            </div>
+            <div class="my-4">
+                <MudTextField @bind-Value="@_leaveApplication.Reason"
+                              T="string" Label="Lý do"
+                              Variant="Variant.Outlined"
+                              Lines="6" />
+            </div>
+            <div class="d-flex my-4">
+                <MudDatePicker @bind-Date="_pickerDate"
+                               PickerVariant="PickerVariant.Dialog"
+                               Variant="Variant.Outlined"
+                               Label="Ngày nghỉ"
+                               TitleDateFormat="dd/MM/yyyy"
+                               DateFormat="dd/MM/yyyy"
+                               MaxDate="@(new DateTime(_year, _month, DateTime.DaysInMonth(_year, _month)))"
+                               MinDate="@(new DateTime(_year, _month, DateTime.Now.Day + 1))"
+                               Required="true"
+                               RequiredError="Không được để trống ngày nghỉ"
+                               Class="mr-4" />
+                <MudSelect @bind-Value="_selectShift"
+                           Label="Ca nghỉ"
+                           Variant="Variant.Outlined"
+                           Class="ml-4">
+                    <MudSelectItem Value="1">ca 1</MudSelectItem>
+                    <MudSelectItem Value="2">ca 2</MudSelectItem>
+                    <MudSelectItem Value="3">ca 3</MudSelectItem>
+                </MudSelect>
+            </div>
+            <div class="text-center m-3">
+                <MudButton OnClick="OnSubmit"
+                           Size="Size.Large"
+                           Color="Color.Success">
+                    Gửi
+                </MudButton>
+            </div>
+        }
+
+    </div>
 </div>
 
 @code {
+    private LeaveApplication _leaveApplication;
+    private int _employeeId;
+    private string _calendarId;
+    private int _month;
+    private int _year;
+    private int _selectShift;
+    private DateTime? _pickerDate;
 
+    private bool _isHaveCalendar = true;
+
+    protected override void OnInitialized()
+    {
+        _employeeId = (int)AuthenticationService.GetCurrentAccount().EmployeeId;
+        _month = DateTime.Now.Month;
+        _year = DateTime.Now.Year;
+        _pickerDate = new DateTime(_year, _month, DateTime.Now.Day + 1);
+        _calendarId = _employeeId + "-" + _year + "-" + _month;
+        _selectShift = 1;
+        _leaveApplication = new LeaveApplication();
+
+        Calendar calendar = CalendarService.GetCalendar(_calendarId);
+        if (calendar == null)
+        {
+            _isHaveCalendar = false;
+        }
+    }
+
+    void OnSubmit()
+    {
+        CalendarDetail calendarDetail = CalendarDetailService.GetCalendarOnDay(_calendarId, GetDay(_pickerDate.ToString()), _selectShift);
+        if (calendarDetail.IsWork == false)
+        {
+            Snackbar.Add($"Không có lịch làm cho ca này");
+        }
+        else
+        {
+            if (calendarDetail.IsLeavePermission == true)
+            {
+                Snackbar.Add($"Đã xin nghỉ phép cho ca này");
+            }
+            else
+            {
+                _leaveApplication.EmployeeId = _employeeId;
+                _leaveApplication.CreateAt = DateTime.Now;
+                _leaveApplication.Day = _pickerDate;
+                _leaveApplication.Shift = _selectShift;
+
+                LeaveApplicationService.Add(_leaveApplication);
+                Snackbar.Add($"Đã gửi đơn xin nghỉ phép");
+                NavigationManager.NavigateTo($"/");
+            }
+        }
+    }
+
+    int GetDay(string DateStr)
+    {
+        string[] arrDateTime = DateStr.Split(" ");
+        string[] arrDate = arrDateTime[0].Split("/");
+        return int.Parse(arrDate[1]);
+    }
 }

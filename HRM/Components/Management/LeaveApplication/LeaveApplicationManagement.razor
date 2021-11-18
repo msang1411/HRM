@@ -1,0 +1,89 @@
+﻿@page "/management/leave-application"
+
+@inject LeaveApplicationService LeaveApplicationService
+@inject AuthenticationService AuthenticationService
+@inject EmployeeService EmployeeService
+@inject ISnackbar Snackbar
+@attribute [Authorize(Roles = "Admin")]
+
+<div class="container">
+    <div class="bg-white py-4">
+        <div class="text-center my-4">
+            <MudText Typo="Typo.h4">Duyệt đơn xin nghỉ phép</MudText>
+        </div>
+        @if(_leaveApplicationsNotApprovedYet.Count == 0)
+        {
+            <div class="text-center my-4">
+                <MudText Typo="Typo.h6">Không có đơn nghỉ phép</MudText>
+            </div>
+        }
+        else
+        {
+            <MudTable Items="_leaveApplicationsNotApprovedYet">
+                <HeaderContent>
+                    <MudTh>Họ tên</MudTh>
+                    <MudTh>Lý do</MudTh>
+                    <MudTh>Thời gian nghỉ</MudTh>
+                    <MudTh>Duyệt</MudTh>
+                    <MudTh>Xóa</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Họ tên">@EmployeeService.GetEmployee(context.EmployeeId).Name</MudTd>
+                    <MudTd DataLabel="Lý do">@context.Reason</MudTd>
+                    <MudTd DataLabel="Thời gian nghỉ">@context.Day - ca @context.Shift</MudTd>
+                    <MudTd DataLabel="Duyệt">
+                        <MudButton OnClick="()=>OnApproved(context)"
+                                   Color="Color.Success">
+                            Duyệt
+                        </MudButton>
+                    </MudTd>
+                    <MudTd DataLabel="Không duyệt">
+                        <MudButton OnClick="()=>OnDontApproved(context)"
+                                   Color="Color.Error">
+                            Xóa
+                        </MudButton>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+        
+    </div>
+</div>
+
+@code {
+    private List<LeaveApplication> _leaveApplicationsNotApprovedYet;
+    private int _approverId;
+    private int _month;
+    private int _year;
+    private string _calendarId = "";
+
+    protected override void OnInitialized()
+    {
+        _approverId = (int)AuthenticationService.GetCurrentAccount().EmployeeId;
+        _leaveApplicationsNotApprovedYet = LeaveApplicationService.GetNotApprovedYet();
+        _month = DateTime.Now.Month;
+        _year = DateTime.Now.Year;
+    }
+
+    void OnApproved(LeaveApplication leaveApplication)
+    {
+        _calendarId = leaveApplication.EmployeeId + "-" + _year + "-" + _month;
+        leaveApplication.Approver = _approverId;
+        leaveApplication.IsApproved = true;
+        LeaveApplicationService.Approved(leaveApplication, _calendarId);
+        _calendarId = "";
+        _leaveApplicationsNotApprovedYet.Remove(leaveApplication);
+        Snackbar.Add($"Duyệt đơn nghỉ phép cho" + EmployeeService.GetEmployee(leaveApplication.EmployeeId).Name);
+    }
+
+    void OnDontApproved(LeaveApplication leaveApplication)
+    {
+        _calendarId = leaveApplication.EmployeeId + "-" + _year + "-" + _month;
+        leaveApplication.Approver = _approverId;
+        leaveApplication.IsApproved = false;
+        LeaveApplicationService.Approved(leaveApplication, _calendarId);
+        _calendarId = "";
+        _leaveApplicationsNotApprovedYet.Remove(leaveApplication);
+        Snackbar.Add($"Không duyệt uyệt đơn nghỉ phép cho " + EmployeeService.GetEmployee(leaveApplication.EmployeeId).Name);
+    }
+}

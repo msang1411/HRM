@@ -363,9 +363,13 @@ namespace HRM.Models
 
                 entity.Property(e => e.Approver).HasColumnName("approver");
 
+                entity.Property(e => e.Day).HasColumnName("day");
+
                 entity.Property(e => e.IsApproved).HasColumnName("is_approved");
 
                 entity.Property(e => e.Reason).HasColumnName("reason");
+
+                entity.Property(e => e.Shift).HasColumnName("shift");
 
                 entity.HasOne(d => d.ApproverNavigation)
                     .WithMany(p => p.LeaveApplicationApproverNavigations)
