@@ -1,0 +1,70 @@
+﻿@page "/management/salary"
+
+@inject SalaryService SalaryService
+@inject EmployeeService EmployeeService
+@inject PositionService PositionService
+@inject ISnackbar Snackbar
+@attribute [Authorize(Roles = "Admin")]
+
+<div class="container">
+    <div class="bg-white py-4">
+        <MudTable Items="@_salaries" Hover="true">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Bảng lương</MudText>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Họ tên</MudTh>
+                <MudTh>Chức vụ</MudTh>
+                <MudTh>Lương</MudTh>
+                <MudTh>Trả lương</MudTh>
+                <MudTh>Ngày trả</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Họ tên">@GetNameFromSalaryId(context.SalaryId)</MudTd>
+                <MudTd DataLabel="Chức vụ">@GetPositionFromSalaryId(context.SalaryId)</MudTd>
+                <MudTd DataLabel="Lương">@context.TotalSalary</MudTd>
+                <MudTd DataLabel="Trả lương">
+                    <MudButton OnClick="()=>HandlePaidSalary(context.SalaryId)"
+                               Variant="Variant.Filled"
+                               Color="Color.Success"
+                               Disabled="(bool)context.IsPaid">
+                        @((bool)context.IsPaid ? "Đã trả" : "Chưa trả")
+                    </MudButton>
+                </MudTd>
+                <MudTd DataLabel="Ngày trả">
+                    @if (context.PaidDate != null)
+                    {
+                        <p>@context.PaidDate.ToString().Split(" ")[0]</p>
+                    }
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </div>
+</div>
+
+@code {
+    private IEnumerable<Salary> _salaries;
+
+    protected override void OnInitialized()
+    {
+        _salaries = SalaryService.GetListSalaryCurrent();
+    }
+
+    private String GetNameFromSalaryId(string salaryId)
+    {
+        return EmployeeService.GetEmployee(int.Parse(salaryId.Split("-")[0])).Name;
+    }
+
+    private String GetPositionFromSalaryId(string salaryId)
+    {
+        return PositionService.GetPosition((int)EmployeeService.GetEmployee(int.Parse(salaryId.Split("-")[0])).PositionId).Name;
+    }
+
+    private void HandlePaidSalary(string salaryId)
+    {
+        SalaryService.UpdatePaid(salaryId);
+        _salaries.Where(x => x.SalaryId == salaryId).FirstOrDefault().IsPaid = true;
+        _salaries.Where(x => x.SalaryId == salaryId).FirstOrDefault().PaidDate = DateTime.Now;
+        Snackbar.Add($"Đã trả lương");
+    }
+}

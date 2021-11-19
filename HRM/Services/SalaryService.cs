@@ -62,5 +62,27 @@ namespace HRM.Services
             context.Salaries.Update(salary);
             context.SaveChanges();
         }
+
+        public List<Salary> GetListSalaryCurrent()
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            int month = DateTime.Now.Month;
+            int year = DateTime.Now.Year;
+            return context.Salaries.Where(x => x.CreateAt.Year == year &&
+                                               x.CreateAt.Month == month)
+                                   .ToList();
+        }
+
+        public void UpdatePaid(string salaryId)
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+
+            Salary salary = GetSalary(salaryId);
+            salary.IsPaid = true;
+            salary.PaidDate = DateTime.Now;
+
+            context.Salaries.Update(salary);
+            context.SaveChanges();
+        }
     }
 }

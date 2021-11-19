@@ -35,7 +35,8 @@
                             <MudIconButton OnClick="() => OnEditSalaryDetail(context)"
                                            Variant="Variant.Filled"
                                            Color="Color.Success"
-                                           Icon="@Icons.Material.Filled.Edit" />
+                                           Icon="@Icons.Material.Filled.Edit" 
+                                           Disabled="(bool)_salary.IsPaid"/>
                         </MudTd>
                     </Authorized>
                 </AuthorizeView>
@@ -45,54 +46,20 @@
                 <MudTd>@_totalSalary VND</MudTd>
             </FooterContent>
         </MudTable>
-
-        @if (_isEdit == true)
+        if (_salary.IsPaid == false)
         {
-            <MudForm Model="_salaryDetailEdit" class="my-5" @bind-IsValid="_editSuccess">
-                <MudText Color="Color.Default">chỉnh sửa</MudText>
-                <MudGrid Justify="Justify.Center">
-                    <MudItem lg="6" xs="12">
-                        <MudTextField Variant="Variant.Outlined" Label="Nội dung"
-                                      @bind-Value="_salaryDetailEdit.Content" Required="true"
-                                      RequiredError="Không được để trống nội dung" />
-                    </MudItem>
-                    <MudItem lg="4" xs="8">
-                        <MudTextField @bind-Value="_salaryDetailEdit.Salary"
-                                      Variant="Variant.Outlined"
-                                      Label="Số tiền" Required="true"
-                                      Adornment="Adornment.Start"
-                                      AdornmentIcon="@Icons.Material.Filled.AttachMoney"
-                                      RequiredError="Không được để trống số tiền" />
-                    </MudItem>
-                    <MudItem lg="1" xs="2" Class="align-self-center">
-                        <MudIconButton OnClick="OnUpdateSalaryDetail"
-                                       Variant="Variant.Filled"
-                                       Color="Color.Success"
-                                       Icon="@Icons.Material.Filled.Save"
-                                       Disabled="@(!_editSuccess)" />
-                    </MudItem>
-                    <MudItem lg="1" xs="2" Class="align-self-center">
-                        <MudIconButton OnClick="OnCancelUpdateSalaryDetail"
-                                       Variant="Variant.Filled"
-                                       Color="Color.Error"
-                                       Icon="@Icons.Material.Filled.Cancel" />
-                    </MudItem>
-                </MudGrid>
-            </MudForm>
-        }
-        <AuthorizeView Roles="Admin">
-            <Authorized Context="admin">
-                <MudForm Model="_salaryDetail" class="my-5" @bind-IsValid="_addSuccess">
-                    <MudText Color="Color.Default">Thêm mục lương (số ca làm nghỉ: @_numberOfDaysOffWork, trong đó 
-                                                                    có @_numberDayLeavePermission phép)</MudText>
+            @if (_isEdit == true)
+            {
+                <MudForm Model="_salaryDetailEdit" class="my-5" @bind-IsValid="_editSuccess">
+                    <MudText Color="Color.Default">chỉnh sửa</MudText>
                     <MudGrid Justify="Justify.Center">
-                        <MudItem lg="7" xs="12">
+                        <MudItem lg="6" xs="12">
                             <MudTextField Variant="Variant.Outlined" Label="Nội dung"
-                                          @bind-Value="_salaryDetail.Content" Required="true"
+                                          @bind-Value="_salaryDetailEdit.Content" Required="true"
                                           RequiredError="Không được để trống nội dung" />
                         </MudItem>
-                        <MudItem lg="4" xs="10">
-                            <MudTextField @bind-Value="_salaryDetail.Salary"
+                        <MudItem lg="4" xs="8">
+                            <MudTextField @bind-Value="_salaryDetailEdit.Salary"
                                           Variant="Variant.Outlined"
                                           Label="Số tiền" Required="true"
                                           Adornment="Adornment.Start"
@@ -100,16 +67,60 @@
                                           RequiredError="Không được để trống số tiền" />
                         </MudItem>
                         <MudItem lg="1" xs="2" Class="align-self-center">
-                            <MudIconButton OnClick="OnAddSalaryDetail"
+                            <MudIconButton OnClick="OnUpdateSalaryDetail"
                                            Variant="Variant.Filled"
                                            Color="Color.Success"
-                                           Icon="@Icons.Material.Filled.Add"
-                                           Disabled="@(!_addSuccess)" />
+                                           Icon="@Icons.Material.Filled.Save"
+                                           Disabled="@(!_editSuccess)" />
+                        </MudItem>
+                        <MudItem lg="1" xs="2" Class="align-self-center">
+                            <MudIconButton OnClick="OnCancelUpdateSalaryDetail"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Error"
+                                           Icon="@Icons.Material.Filled.Cancel" />
                         </MudItem>
                     </MudGrid>
                 </MudForm>
-            </Authorized>
-        </AuthorizeView>  
+            }
+            <AuthorizeView Roles="Admin">
+                <Authorized Context="admin">
+                    <MudForm Model="_salaryDetail" class="my-5" @bind-IsValid="_addSuccess">
+                        <MudText Color="Color.Default">
+                            Thêm mục lương (số ca làm nghỉ: @_numberOfDaysOffWork, trong đó
+                            có @_numberDayLeavePermission phép)
+                        </MudText>
+                        <MudGrid Justify="Justify.Center">
+                            <MudItem lg="7" xs="12">
+                                <MudTextField Variant="Variant.Outlined" Label="Nội dung"
+                                              @bind-Value="_salaryDetail.Content" Required="true"
+                                              RequiredError="Không được để trống nội dung" />
+                            </MudItem>
+                            <MudItem lg="4" xs="10">
+                                <MudTextField @bind-Value="_salaryDetail.Salary"
+                                              Variant="Variant.Outlined"
+                                              Label="Số tiền" Required="true"
+                                              Adornment="Adornment.Start"
+                                              AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                                              RequiredError="Không được để trống số tiền" />
+                            </MudItem>
+                            <MudItem lg="1" xs="2" Class="align-self-center">
+                                <MudIconButton OnClick="OnAddSalaryDetail"
+                                               Variant="Variant.Filled"
+                                               Color="Color.Success"
+                                               Icon="@Icons.Material.Filled.Add"
+                                               Disabled="@(!_addSuccess)" />
+                            </MudItem>
+                        </MudGrid>
+                    </MudForm>
+                </Authorized>
+            </AuthorizeView>
+        }
+        else
+        {
+            <div class="text-center my-3">
+                <MudText Typo="Typo.h5" Color="Color.Primary">Đã trả lương</MudText>
+            </div>
+        }
     }
 </div>
 
