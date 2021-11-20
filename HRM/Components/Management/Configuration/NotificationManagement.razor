@@ -1,0 +1,69 @@
+﻿@page "/management/notification"
+
+@inject EmployeeService EmployeeService
+@inject PositionService PositionService
+@inject NotificationService NotificationService
+@inject AuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+@attribute [Authorize(Roles = "Admin")]
+
+<div class="container">
+    <div class="bg-white py-3">
+        <div class="text-center">
+            <MudText Typo="Typo.h4"><strong>Thông báo chung</strong></MudText>
+        </div>
+        <div class="mx-5">
+            <MudTextField Variant="Variant.Filled" Label="Tiêu đề"
+                          @bind-Value="_title"
+                          Class="my-2" />
+        </div>
+        <div class="mx-5">
+            <MudTextField @bind-Value="_contentNotification"
+                          T="string" Label="Nội dung thông báo"
+                          Variant="Variant.Outlined"
+                          Lines="7"
+                          Class="my-2" />
+        </div>
+        <div class="text-center">
+            <MudButton OnClick="HandleNotification"
+                       Color="Color.Success"
+                       Variant="Variant.Filled"
+                       Size="Size.Large">
+                Thông báo
+            </MudButton>
+        </div>
+    </div>
+</div>
+
+@code {
+    private int _departmentId = 1; // 1 là id của phòng admin
+    private Notification _notification;
+    private string _contentNotification;
+    private string _title;
+    private int _adminId;
+
+    protected override void OnInitialized()
+    {
+        _adminId = (int)AuthenticationService.GetCurrentAccount().EmployeeId;
+        _notification = NotificationService.GetNotification(_departmentId);
+        if (_notification == null)
+        {
+            _notification = new Notification();
+            _notification.DepartmentId = 1;
+            NotificationService.CreateNotification(_notification);
+        }
+        _contentNotification = _notification.Content;
+        _title = _notification.Title;
+    }
+
+    void HandleNotification()
+    {
+        _notification.Title = _title;
+        _notification.Content = _contentNotification;
+        _notification.CreatorId = _adminId;
+        NotificationService.Update(_notification);
+        Snackbar.Add($"Cập nhật thông báo");
+        NavigationManager.NavigateTo($"/");
+    }
+}

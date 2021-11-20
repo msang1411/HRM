@@ -386,24 +386,28 @@ namespace HRM.Models
 
             modelBuilder.Entity<Notification>(entity =>
             {
-                entity.HasKey(e => new { e.CreateAt, e.EmployeeId })
+                entity.HasKey(e => e.DepartmentId)
                     .HasName("notification_pkey");
 
                 entity.ToTable("notification");
 
-                entity.Property(e => e.CreateAt).HasColumnName("create_at");
-
-                entity.Property(e => e.EmployeeId).HasColumnName("employee_id");
+                entity.Property(e => e.DepartmentId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("department_id");
 
                 entity.Property(e => e.Content).HasColumnName("content");
 
+                entity.Property(e => e.CreateAt).HasColumnName("create_at");
+
+                entity.Property(e => e.CreatorId).HasColumnName("creator_id");
+
                 entity.Property(e => e.Title).HasColumnName("title");
 
-                entity.HasOne(d => d.Employee)
-                    .WithMany(p => p.Notifications)
-                    .HasForeignKey(d => d.EmployeeId)
+                entity.HasOne(d => d.Department)
+                    .WithOne(p => p.Notification)
+                    .HasForeignKey<Notification>(d => d.DepartmentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_employee");
+                    .HasConstraintName("fk_department");
             });
 
             modelBuilder.Entity<Position>(entity =>
