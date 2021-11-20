@@ -1,0 +1,43 @@
+﻿@inject EmployeeService EmployeeService
+@inject PositionService PositionService
+@inject NotificationService NotificationService
+@inject AuthenticationService AuthenticationService
+
+<div class="bg-white py-3 m-2">
+    <div class="text-center">
+        <MudText Typo="Typo.h4"><strong>Thông báo</strong></MudText>
+    </div>
+    <div class="mx-5 p-5 border">
+        <MudText Class="my-2" Typo="Typo.h4">
+            @if (_notification.Title != null)
+            {
+                <p>@_notification.Title</p>
+            }
+        </MudText>
+        @if (_notification.Content == null)
+        {
+            <p>Không có thông báo</p>
+        }
+        else
+        {
+            <p style="font-size:20px">@_notification.Content</p>
+            <div class="float-right">
+                <p>@EmployeeService.GetEmployee(_notification.CreatorId).Name - @_notification.CreateAt.Date</p>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public int DepartmentId { get; set; }
+    private Notification _notification;
+
+    protected override void OnInitialized()
+    {
+        _notification = NotificationService.GetNotification(DepartmentId);
+        if(_notification == null)
+        {
+            _notification = new Notification();
+        }
+    }
+}

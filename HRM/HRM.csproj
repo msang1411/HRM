@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Components\Home\" />
     <Folder Include="Components\Personel\Modal\" />
     <Folder Include="Components\Personel\Salary\" />
     <Folder Include="Data\" />

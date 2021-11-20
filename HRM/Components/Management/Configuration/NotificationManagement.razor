@@ -62,6 +62,7 @@
         _notification.Title = _title;
         _notification.Content = _contentNotification;
         _notification.CreatorId = _adminId;
+        _notification.CreateAt = DateTime.Now;
         NotificationService.Update(_notification);
         Snackbar.Add($"Cập nhật thông báo");
         NavigationManager.NavigateTo($"/");

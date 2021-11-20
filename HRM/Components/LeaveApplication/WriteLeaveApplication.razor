@@ -6,6 +6,7 @@
 @inject AuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
+@attribute [Authorize(Roles = "Admin,User")]
 
 <div class="container">
     <div class="bg-white p-4">

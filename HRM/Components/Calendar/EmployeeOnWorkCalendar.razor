@@ -1,0 +1,110 @@
+﻿@inject CalendarService CalendarService
+@inject CalendarDetailService CalendarDetailService
+@inject EmployeeService EmployeeService
+@inject DepartmentService DepartmentService
+
+<div class="bg-white m-2 p-2">
+    <div class="text-center">
+        <MudText Typo="Typo.h4">Lịch làm việc hôm nay</MudText>
+    </div>
+    <div style="overflow-y: scroll;">
+        <table class="table">
+            <tr>
+                <th></th>
+                @foreach (Department department in _departments)
+                {
+                    <th>@department.Name</th>
+                }
+            </tr>
+            <tr>
+                <td>Ca 8:00 - 12:00</td>
+                @foreach (Department department in _departments)
+                {
+                    <td>
+                        <ul style="list-style-type:circle">
+                            @foreach ((Employee EmployeeWork, int Shift) employeeWork in _employeesWork)
+                            {
+                                if (employeeWork.EmployeeWork.DepartmentId == department.DepartmentId &&
+                                    employeeWork.Shift == 1)
+                                {
+                                    <li>@employeeWork.EmployeeWork.Name</li>
+                                }
+                            }
+                        </ul>
+                    </td>
+                }
+            </tr>
+            <tr>
+                <td>Ca 14:00 - 18:00</td>
+                @foreach (Department department in _departments)
+                {
+                    <td>
+                        <ul style="list-style-type:circle">
+                            @foreach ((Employee EmployeeWork, int Shift) employeeWork in _employeesWork)
+                            {
+                                if (employeeWork.EmployeeWork.DepartmentId == department.DepartmentId &&
+                                    employeeWork.Shift == 2)
+                                {
+                                    <li>@employeeWork.EmployeeWork.Name</li>
+                                }
+                            }
+                        </ul>
+                    </td>
+                }
+            </tr>
+            <tr>
+                <td>Ca 19:00 - 21:00</td>
+                @foreach (Department department in _departments)
+                {
+                    <td>
+                        <ul style="list-style-type:circle">
+                            @foreach ((Employee EmployeeWork, int Shift) employeeWork in _employeesWork)
+                            {
+                                if (employeeWork.EmployeeWork.DepartmentId == department.DepartmentId &&
+                                    employeeWork.Shift == 3)
+                                {
+                                    <li>@employeeWork.EmployeeWork.Name</li>
+                                }
+                            }
+                        </ul>
+                    </td>
+                }
+            </tr>
+        </table>
+    </div>
+    
+</div>
+
+@code {
+    private string _calendarId = "";
+    private int _month;
+    private int _year;
+    private List<(Employee EmployeeWork, int Shift)> _employeesWork = new();
+    private Calendar _calendar;
+
+    private List<Department> _departments;
+
+    protected override void OnInitialized()
+    {
+        _departments = DepartmentService.GetAllDepartments();
+        _month = DateTime.Now.Month;
+        _year = DateTime.Now.Year;
+
+        for (int shift = 1; shift <= 3; shift++)
+        {
+            foreach (Employee employee in EmployeeService.GetAll())
+            {
+                _calendarId = employee.EmployeeId + "-" + _year + "-" + _month;
+                Calendar calendar = CalendarService.GetCalendar(_calendarId);
+                if (calendar != null)
+                {
+                    CalendarDetail calendarDetail = CalendarDetailService.GetCalendarOnDay(_calendarId, DateTime.Now.Day, shift);
+                    if (calendarDetail.IsWork == true)
+                    {
+                        _employeesWork.Add((employee,shift));
+                    }
+                }
+            }
+        }
+    }
+}

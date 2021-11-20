@@ -1,0 +1,25 @@
+﻿@page "/"
+
+@inject EmployeeService EmployeeService
+@inject PositionService PositionService
+@inject NotificationService NotificationService
+@inject AuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+@attribute [Authorize(Roles = "Admin,User")]
+
+
+<div>
+    <MudGrid>
+        <MudItem lg="8" md="6" xs="12">
+            <HRM.Components.Calendar.EmployeeOnWorkCalendar/>
+        </MudItem>
+        <MudItem lg="4" md="6" xs="12">
+            <HRM.Components.Notification.NotificationView DepartmentId="1" />
+        </MudItem>
+    </MudGrid>
+</div>
+
+@code {
+
+}
