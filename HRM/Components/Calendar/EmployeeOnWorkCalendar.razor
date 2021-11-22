@@ -72,7 +72,7 @@
             </tr>
         </table>
     </div>
-    
+
 </div>
 
 @code {
@@ -101,7 +101,7 @@
                     CalendarDetail calendarDetail = CalendarDetailService.GetCalendarOnDay(_calendarId, DateTime.Now.Day, shift);
                     if (calendarDetail.IsWork == true)
                     {
-                        _employeesWork.Add((employee,shift));
+                        _employeesWork.Add((employee, shift));
                     }
                 }
             }

@@ -5,6 +5,7 @@
 @inject HRM.Services.DepartmentService DepartmentService
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ISnackbar Snackbar
 @attribute [Authorize(Roles = "Admin")]
 @using HRM.Models
 @using MudBlazor
@@ -136,5 +137,6 @@
         }
         EmployeeService.AddEmployee(_employee);
         NavigationManager.NavigateTo($"/management/employees");
+        Snackbar.Add($"Thêm nhân viên " + _employee.Name + " thành công");
     }
 }

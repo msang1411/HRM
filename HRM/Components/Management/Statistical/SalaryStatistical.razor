@@ -1,9 +1,13 @@
 ﻿@page "/management/salary"
 
+@using System.IO;
 @inject SalaryService SalaryService
 @inject EmployeeService EmployeeService
 @inject PositionService PositionService
+@inject ExcelService ExcelService
+@inject IJSRuntime JSRuntime
 @inject ISnackbar Snackbar
+@inject HttpClient HttpClient
 @attribute [Authorize(Roles = "Admin")]
 
 <div class="container">
@@ -39,15 +43,49 @@
                 </MudTd>
             </RowTemplate>
         </MudTable>
+        <MudExpansionPanels Style="flex: 1;">
+            <MudExpansionPanel Text="Thống kê tổng lương">
+                <div>
+                    <MudText Style="display:inline-block">Tổng tiền lương trong tháng @_currentMonth năm @_currentYear</MudText>
+                    <MudText Style="display:inline-block" Class="float-right">@_totalPrice VND</MudText>
+                </div>
+                <div>
+                    <MudText Style="display:inline-block">Tổng tiền lương đã trả</MudText>
+                    <MudText Style="display:inline-block" Class="float-right">@_totalPricePaid VND</MudText>
+                </div>
+                <div>
+                    <MudText Style="display:inline-block">Tổng tiền lương chưa trả</MudText>
+                    <MudText Style="display:inline-block" Class="float-right">@_totalPriceUnPaid VND</MudText>
+                </div>
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+        <div>
+            <MudButton Color="Color.Success"
+                       Class="m-1"
+                       OnClick="CreateDocument">
+                Tải file excel
+            </MudButton>
+        </div>
     </div>
 </div>
 
 @code {
-    private IEnumerable<Salary> _salaries;
+    private List<Salary> _salaries;
+    MemoryStream excelStream;
+    private Decimal _totalPrice;
+    private Decimal _totalPricePaid;
+    private Decimal _totalPriceUnPaid;
+    private int _currentMonth;
+    private int _currentYear;
 
     protected override void OnInitialized()
     {
         _salaries = SalaryService.GetListSalaryCurrent();
+        _totalPrice = (Decimal)_salaries.Sum(x => x.TotalSalary);
+        _totalPricePaid = (Decimal)_salaries.Where(x => x.IsPaid == true).Sum(x => x.TotalSalary);
+        _totalPriceUnPaid = _totalPrice - _totalPricePaid;
+        _currentMonth = DateTime.Now.Month;
+        _currentYear = DateTime.Now.Year;
     }
 
     private String GetNameFromSalaryId(string salaryId)
@@ -66,5 +104,12 @@
         _salaries.Where(x => x.SalaryId == salaryId).FirstOrDefault().IsPaid = true;
         _salaries.Where(x => x.SalaryId == salaryId).FirstOrDefault().PaidDate = DateTime.Now;
         Snackbar.Add($"Đã trả lương");
+        _totalPricePaid = (Decimal)_salaries.Where(x => x.IsPaid == true).Sum(x => x.TotalSalary);
+        _totalPriceUnPaid = _totalPrice - _totalPricePaid;
+    }
+    protected async void CreateDocument()
+    {
+        excelStream = ExcelService.CreateExcelSalary();
+        await JSRuntime.InvokeAsync<object>("saveAsFile", "test.xlsx", excelStream.ToArray());
     }
 }

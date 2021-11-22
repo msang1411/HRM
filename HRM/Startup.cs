@@ -57,6 +57,7 @@ namespace HRM
             services.AddSingleton<SalaryService>();
             services.AddSingleton<SalaryDetailService>();
             services.AddSingleton<NotificationService>();
+            services.AddSingleton<ExcelService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

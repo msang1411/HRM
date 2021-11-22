@@ -1,5 +1,6 @@
 ﻿@inject CalendarService CalendarService
 @inject CalendarDetailService CalendarDetailService
+@inject ISnackbar Snackbar
 
 <div Class="mx-2">
     <div class="text-center my-4 mx-2">
@@ -31,7 +32,7 @@
                             else
                             {
                                 @foreach (var shift in _listCalendarDetail.Where(x => x.Day == _day && x.IsWork == true)
-                                      .OrderBy(x => x.Shift))
+                                     .OrderBy(x => x.Shift))
                                 {
                                     if (shift.IsLeavePermission == false)
                                     {
@@ -143,6 +144,7 @@
         CalendarDetailService.UpdateCalendar(_listCalendarDetail);
         IsEdit = false;
         OnChangeIsEdit.InvokeAsync(IsEdit);
+        Snackbar.Add($"Chỉnh sửa lịch làm việc thành công");
     }
     void OnCancelUpdateCalendar()
     {

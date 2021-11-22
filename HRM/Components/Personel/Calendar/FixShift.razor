@@ -51,7 +51,7 @@
                 {
                     @if (_isWorkShift == true)
                     {
-                        if (@_calendarDetail.IsAttendance == null)
+                        if (_calendarDetail.IsAttendance == null && _calendarDetail.Day == DateTime.Now.Day)
                         {
                             <p>chưa qua ca này</p>
                         }
