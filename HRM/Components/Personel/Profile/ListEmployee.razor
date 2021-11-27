@@ -1,10 +1,17 @@
 ﻿@page "/employee/list-employees"
+
+@inject EmployeeService EmployeeService
 @attribute [Authorize(Roles = "Admin,User")]
 
 <div class="container">
-    <EmployeeGridTable/>
+    <EmployeeGridTable ListEmployee="_listEmployee"/>
 </div>
 
 @code {
+    private List<Employee> _listEmployee;
 
+    protected override void OnInitialized()
+    {
+        _listEmployee = EmployeeService.GetAll();
+    }
 }

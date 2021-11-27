@@ -1,11 +1,18 @@
 ﻿@page "/management/employees"
+
 @using HRM.Components
+@inject EmployeeService EmployeeService
 @attribute [Authorize(Roles = "Admin")]
 
 <div class="container">
-    <HRM.Components.Personel.EmployeeGridTable />
+    <HRM.Components.Personel.EmployeeGridTable ListEmployee="_listEmployee"/>
 </div>
 
 @code {
+    private List<Employee> _listEmployee;
 
+    protected override void OnInitialized()
+    {
+        _listEmployee = EmployeeService.GetAll();
+    }
 }

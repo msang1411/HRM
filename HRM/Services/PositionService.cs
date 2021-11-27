@@ -35,11 +35,16 @@ namespace HRM.Services
             context.SaveChanges();
         }
 
-        public void Delete(Position position)
+        public bool Delete(Position position)
         {
             using var context = _dbContextFactory.CreateDbContext();
-            context.Positions.Remove(position);
-            context.SaveChanges();
+            if (context.Employees.Where(x => x.PositionId == position.PositionId).Count() == 0)
+            {
+                context.Positions.Remove(position);
+                context.SaveChanges();
+                return true;
+            }
+            return false;
         }
 
         public void Update(Position position)

@@ -35,11 +35,19 @@ namespace HRM.Services
             context.SaveChanges();
         }
 
-        public void Delete(Department department)
+        public bool Delete(Department department)
         {
             using var context = _dbContextFactory.CreateDbContext();
-            context.Departments.Remove(department);
-            context.SaveChanges();
+            if (context.Employees.Where(x => x.DepartmentId == department.DepartmentId).Count() == 0)
+            {
+                context.Departments.Remove(department);
+                context.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public void Update(Department department)

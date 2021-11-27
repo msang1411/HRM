@@ -2,6 +2,7 @@
 @inject PositionService PositionService
 @inject DepartmentService DepartmentService
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ISnackbar Snackbar
 @attribute [Authorize(Roles = "Admin")]
 
 <div>
@@ -196,8 +197,14 @@
 
         if (result == true)
         {
-            PositionService.Delete(position);
-            _listPositions.Remove(position);
+            if(PositionService.Delete(position))
+            {
+                _listPositions.Remove(position);
+            }
+            else
+            {
+                Snackbar.Add($"Còn nhân viên giữ chức vụ này nên không thể xóa được.");
+            }
         }
     }
 
@@ -209,8 +216,14 @@
 
         if (result == true)
         {
-            DepartmentService.Delete(department);
-            _listDepartments.Remove(department);
+            if (DepartmentService.Delete(department))
+            {
+                _listDepartments.Remove(department);
+            }
+            else
+            {
+                Snackbar.Add($"Còn nhân viên ở phòng ban này nên không thể xóa được.");
+            }
         }
     }
 

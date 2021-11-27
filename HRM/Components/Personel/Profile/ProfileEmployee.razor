@@ -84,88 +84,91 @@
             }
             else
             {
-                <MudGrid Class="px-2">
-                    <MudItem xs="6">
-                        <MudText>Thông tin cơ bản</MudText>
-                        <MudTextField Variant="Variant.Outlined" Label="Họ tên nhân viên"
-                                      @bind-Value="_employeeEdit.Name" Required="true"
-                                      RequiredError="Không được để trống họ tên"
-                                      Class="my-2" />
+                <MudForm Model="_employee">
+                    <MudGrid Class="px-2">
+                        <MudItem xs="6">
+                            <MudText>Thông tin cơ bản</MudText>
+                            <MudTextField Variant="Variant.Outlined" Label="Họ tên nhân viên"
+                                          @bind-Value="_employeeEdit.Name" Required="true"
+                                          RequiredError="Không được để trống họ tên"
+                                          Class="my-2" />
 
-                        <MudTextField Variant="Variant.Outlined" Label="Email"
-                                      @bind-Value="_employeeEdit.Email" Required="true"
-                                      RequiredError="Không được để trống email"
-                                      Class="my-2" />
+                            <MudTextField Variant="Variant.Outlined" Label="Email"
+                                          @bind-Value="_employeeEdit.Email" Required="true"
+                                          RequiredError="Không được để trống email"
+                                          Class="my-2" />
 
-                        <MudDatePicker @bind-Date="_employeeEdit.Birth"
-                                       PickerVariant="PickerVariant.Dialog"
+                            <MudDatePicker @bind-Date="_employeeEdit.Birth"
+                                           PickerVariant="PickerVariant.Dialog"
+                                           Variant="Variant.Outlined"
+                                           Label="Ngày sinh"
+                                           TitleDateFormat="dd/MM/yyyy"
+                                           DateFormat="dd/MM/yyyy"
+                                           MaxDate="@DateTime.Now"
+                                           Required="true"
+                                           RequiredError="Không được để trống ngày sinh"
+                                           Class="my-2" />
+                            <div Class="my-2">
+                                <MudText>Giới tính</MudText>
+                                <MudRadioGroup @bind-SelectedOption="_employeeEdit.Gender" Required="true"
+                                               RequiredError="Không được để trống giới tính">
+                                    <MudRadio Option="@("nam")" Color="Color.Primary" Dense="true">Nam</MudRadio>
+                                    <MudRadio Option="@("nữ")" Color="Color.Secondary" Dense="false">Nữ</MudRadio>
+                                </MudRadioGroup>
+                            </div>
+
+                            <MudTextField @bind-Value="_employeeEdit.PhoneNumber"
+                                          Variant="Variant.Outlined"
+                                          Label="Số điện thoại"
+                                          Adornment="Adornment.None"
+                                          Required="true"
+                                          RequiredError="Không được để trống số điện thoại"
+                                          Class="my-2" />
+
+                            <MudTextField @bind-Value="_employeeEdit.Description"
+                                          T="string" Label="Mô tả"
+                                          Variant="Variant.Outlined"
+                                          Lines="4"
+                                          Class="my-2" />
+                        </MudItem>
+                        <MudItem xs="6">
+                            <MudText Color="Color.Error">Thông tin quan trọng</MudText>
+                            <MudSelect @bind-Value="@_employeeEdit.DepartmentId"
+                                       T="int?"
+                                       Label="Phòng ban" Strict="true"
                                        Variant="Variant.Outlined"
-                                       Label="Ngày sinh"
-                                       TitleDateFormat="dd/MM/yyyy"
-                                       DateFormat="dd/MM/yyyy"
-                                       MaxDate="@DateTime.Now"
+                                       AnchorOrigin="Origin.BottomCenter"
                                        Required="true"
-                                       RequiredError="Không được để trống ngày sinh"
-                                       Class="my-2" />
-                        <div Class="my-2">
-                            <MudText>Giới tính</MudText>
-                            <MudRadioGroup @bind-SelectedOption="_employeeEdit.Gender" Required="true"
-                                           RequiredError="Không được để trống giới tính">
-                                <MudRadio Option="@("nam")" Color="Color.Primary" Dense="true">Nam</MudRadio>
-                                <MudRadio Option="@("nữ")" Color="Color.Secondary" Dense="false">Nữ</MudRadio>
-                            </MudRadioGroup>
-                        </div>
+                                       RequiredError="Không được để trống phòng ban"
+                                       Class="my-2">
+                                @foreach (var department in _listDepartments)
+                                {
+                                    <MudSelectItem T="int?" Value="@department.DepartmentId">@department.Name</MudSelectItem>
+                                }
+                            </MudSelect>
 
-                        <MudTextField @bind-Value="_employeeEdit.PhoneNumber"
-                                      Variant="Variant.Outlined"
-                                      Label="Số điện thoại"
-                                      Adornment="Adornment.None"
-                                      Required="true"
-                                      RequiredError="Không được để trống số điện thoại"
-                                      Class="my-2" />
+                            <MudSelect @bind-Value="_employeeEdit.PositionId"
+                                       T="int?"
+                                       Label="Chức vụ" Strict="true"
+                                       Variant="Variant.Outlined"
+                                       AnchorOrigin="Origin.BottomCenter"
+                                       Required="true"
+                                       RequiredError="Không được để trống chức vụ"
+                                       Class="my-2">
+                                @foreach (var position in _listPositions)
+                                {
+                                    <MudSelectItem T="int?" Value="@position.PositionId">@position.Name</MudSelectItem>
+                                }
+                            </MudSelect>
 
-                        <MudTextField @bind-Value="_employeeEdit.Description"
-                                      T="string" Label="Mô tả"
-                                      Variant="Variant.Outlined"
-                                      Lines="4"
-                                      Class="my-2" />
-                    </MudItem>
-                    <MudItem xs="6">
-                        <MudText Color="Color.Error">Thông tin quan trọng</MudText>
-                        <MudSelect @bind-Value="@_employeeEdit.DepartmentId"
-                                   T="int?"
-                                   Label="Phòng ban" Strict="true"
-                                   Variant="Variant.Outlined"
-                                   AnchorOrigin="Origin.BottomCenter"
-                                   Required="true"
-                                   RequiredError="Không được để trống phòng ban"
-                                   Class="my-2">
-                            @foreach (var department in _listDepartments)
-                            {
-                                <MudSelectItem T="int?" Value="@department.DepartmentId">@department.Name</MudSelectItem>
-                            }
-                        </MudSelect>
-
-                        <MudSelect @bind-Value="_employeeEdit.PositionId"
-                                   T="int?"
-                                   Label="Chức vụ" Strict="true"
-                                   Variant="Variant.Outlined"
-                                   AnchorOrigin="Origin.BottomCenter"
-                                   Required="true"
-                                   RequiredError="Không được để trống chức vụ"
-                                   Class="my-2">
-                            @foreach (var position in _listPositions)
-                            {
-                                <MudSelectItem T="int?" Value="@position.PositionId">@position.Name</MudSelectItem>
-                            }
-                        </MudSelect>
-
-                        <MudTextField Variant="Variant.Outlined" Label="Lương cơ bản"
-                                      @bind-Value="_employeeEdit.Wage" Required="true"
-                                      RequiredError="Không được để trống lương cơ bản"
-                                      Class="my-2" />
-                    </MudItem>
-                </MudGrid>
+                            <MudTextField Variant="Variant.Outlined" Label="Lương cơ bản"
+                                          @bind-Value="_employeeEdit.Wage" Required="true"
+                                          RequiredError="Không được để trống lương cơ bản"
+                                          Class="my-2" />
+                        </MudItem>
+                    </MudGrid>
+                </MudForm>
+                
             }
         </MudPaper>
     </MudItem>
@@ -261,13 +264,25 @@
 
     async Task OnSaveEdit()
     {
-        _isEdit = false;
-        await InvokeAsync(StateHasChanged);
-        EmployeeService.Update(_employeeEdit);
-        _employee = EmployeeService.GetEmployee(EmployeeId);
-        _position = PositionService.GetPosition((int)_employee.PositionId);
-        _department = DepartmentService.GetDepartment((int)_employee.DepartmentId);
-        Snackbar.Add($"Chỉnh sửa lịch làm việc thành công");
+        if (_employeeEdit.Name.Equals("") == true || _employeeEdit.Email.Equals("") == true)
+        {
+            Snackbar.Add($"Lưu không thành công. Có thuộc tính sai kiểu dữ liệu hoặc để trống");
+        }
+        else
+        {
+            _isEdit = false;
+            await InvokeAsync(StateHasChanged);
+            if (_employeeEdit.Wage == null)
+            {
+                _employeeEdit.Wage = PositionService.GetPosition((int)_employeeEdit.PositionId).AverageWage;
+            }
+            EmployeeService.Update(_employeeEdit);
+            _employee = EmployeeService.GetEmployee(EmployeeId);
+            _position = PositionService.GetPosition((int)_employee.PositionId);
+            _department = DepartmentService.GetDepartment((int)_employee.DepartmentId);
+            Snackbar.Add($"Chỉnh sửa thông tin thành công");
+        }
+
     }
 
     string GetDate(string DateStr)
