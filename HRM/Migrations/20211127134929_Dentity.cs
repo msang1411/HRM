@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace HRM.Migrations
 {
-    public partial class HRMI : Migration
+    public partial class Dentity : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -159,8 +159,8 @@ namespace HRM.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "dd2ea969-04a7-49f4-8c48-4acf5ebb9372", "2100f857-d191-4bd1-9e82-01f943fa1fe2", "User", "USER" },
-                    { "a4fc7f89-7385-4b33-b96a-1b469ca00277", "3ddd1d3a-7b1c-4090-936c-3536e8ee9484", "Admin", "ADMIN" }
+                    { "92654074-68f7-4970-9ce8-5253852792db", "1896886f-fdb6-4882-8651-9cdec94b962f", "User", "USER" },
+                    { "e30e9f21-c201-49a7-98c4-2643e1e3a7bf", "707b1580-4701-4035-9e26-c17ff465799a", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(

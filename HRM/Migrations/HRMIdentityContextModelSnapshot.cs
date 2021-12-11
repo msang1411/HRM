@@ -114,15 +114,15 @@ namespace HRM.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dd2ea969-04a7-49f4-8c48-4acf5ebb9372",
-                            ConcurrencyStamp = "2100f857-d191-4bd1-9e82-01f943fa1fe2",
+                            Id = "92654074-68f7-4970-9ce8-5253852792db",
+                            ConcurrencyStamp = "1896886f-fdb6-4882-8651-9cdec94b962f",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "a4fc7f89-7385-4b33-b96a-1b469ca00277",
-                            ConcurrencyStamp = "3ddd1d3a-7b1c-4090-936c-3536e8ee9484",
+                            Id = "e30e9f21-c201-49a7-98c4-2643e1e3a7bf",
+                            ConcurrencyStamp = "707b1580-4701-4035-9e26-c17ff465799a",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
