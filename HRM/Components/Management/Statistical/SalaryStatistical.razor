@@ -84,7 +84,7 @@
         _totalPrice = (Decimal)_salaries.Sum(x => x.TotalSalary);
         _totalPricePaid = (Decimal)_salaries.Where(x => x.IsPaid == true).Sum(x => x.TotalSalary);
         _totalPriceUnPaid = _totalPrice - _totalPricePaid;
-        _currentMonth = DateTime.Now.Month;
+        _currentMonth = DateTime.Now.Month - 1;
         _currentYear = DateTime.Now.Year;
     }
 

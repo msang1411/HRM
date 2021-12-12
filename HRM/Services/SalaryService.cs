@@ -66,7 +66,7 @@ namespace HRM.Services
         public List<Salary> GetListSalaryCurrent()
         {
             using var context = _dbContextFactory.CreateDbContext();
-            int month = DateTime.Now.Month;
+            int month = DateTime.Now.Month - 1;
             int year = DateTime.Now.Year;
             return context.Salaries.Where(x => x.CreateAt.Year == year &&
                                                x.CreateAt.Month == month)
