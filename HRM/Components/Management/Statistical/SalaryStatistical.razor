@@ -26,7 +26,7 @@
             <RowTemplate>
                 <MudTd DataLabel="Họ tên">@GetNameFromSalaryId(context.SalaryId)</MudTd>
                 <MudTd DataLabel="Chức vụ">@GetPositionFromSalaryId(context.SalaryId)</MudTd>
-                <MudTd DataLabel="Lương">@context.TotalSalary</MudTd>
+                <MudTd DataLabel="Lương">@(string.Format("{0:C}", context.TotalSalary)) VND</MudTd>
                 <MudTd DataLabel="Trả lương">
                     <MudButton OnClick="()=>HandlePaidSalary(context.SalaryId)"
                                Variant="Variant.Filled"
@@ -47,15 +47,15 @@
             <MudExpansionPanel Text="Thống kê tổng lương">
                 <div>
                     <MudText Style="display:inline-block">Tổng tiền lương trong tháng @_currentMonth năm @_currentYear</MudText>
-                    <MudText Style="display:inline-block" Class="float-right">@_totalPrice VND</MudText>
+                    <MudText Style="display:inline-block" Class="float-right">@(string.Format("{0:C}", _totalPrice)) VND</MudText>
                 </div>
                 <div>
                     <MudText Style="display:inline-block">Tổng tiền lương đã trả</MudText>
-                    <MudText Style="display:inline-block" Class="float-right">@_totalPricePaid VND</MudText>
+                    <MudText Style="display:inline-block" Class="float-right">@(string.Format("{0:C}", _totalPricePaid)) VND</MudText>
                 </div>
                 <div>
                     <MudText Style="display:inline-block">Tổng tiền lương chưa trả</MudText>
-                    <MudText Style="display:inline-block" Class="float-right">@_totalPriceUnPaid VND</MudText>
+                    <MudText Style="display:inline-block" Class="float-right">@(string.Format("{0:C}", _totalPriceUnPaid)) VND</MudText>
                 </div>
             </MudExpansionPanel>
         </MudExpansionPanels>

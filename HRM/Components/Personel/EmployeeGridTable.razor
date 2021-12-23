@@ -9,7 +9,7 @@
 @attribute [Authorize(Roles = "Admin,User")]
 
 <MudTable Items="@ListEmployee" Hover="true"
-          Filter="new Func<Employee,bool>(FilterFunc)">
+          Filter="new Func<Employee,bool>(FilterFunc)" >
     <ToolBarContent>
         <MudText Typo="Typo.h6">Danh sách nhân viên</MudText>
         <MudSpacer />

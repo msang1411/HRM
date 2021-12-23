@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.31313.79
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HRM", "HRM\HRM.csproj", "{BEA4655A-5CE9-41B0-BF7F-ADB0AA70C65C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestLogin", "UnitTestLogin\UnitTestLogin.csproj", "{50628062-A869-4F46-AB37-F9C729BA89D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{BEA4655A-5CE9-41B0-BF7F-ADB0AA70C65C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEA4655A-5CE9-41B0-BF7F-ADB0AA70C65C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEA4655A-5CE9-41B0-BF7F-ADB0AA70C65C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50628062-A869-4F46-AB37-F9C729BA89D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50628062-A869-4F46-AB37-F9C729BA89D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50628062-A869-4F46-AB37-F9C729BA89D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50628062-A869-4F46-AB37-F9C729BA89D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

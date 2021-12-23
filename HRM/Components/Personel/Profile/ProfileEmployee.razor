@@ -67,7 +67,7 @@
                         <p style="font-size:20px">Giới tính: @_employee.Gender</p>
                         <AuthorizeView Roles="Admin">
                             <Authorized Context="admin">
-                                <p style="font-size:20px">Lương cơ bản: @_employee.Wage VND</p>
+                                <p style="font-size:20px">Lương cơ bản: @(string.Format("{0:C}", _employee.Wage))  VND</p>
                             </Authorized>
                         </AuthorizeView>
                     </MudItem>
